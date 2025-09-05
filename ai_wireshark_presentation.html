@@ -1,0 +1,1945 @@
+        <!-- Slide 8: Demo Transition -->
+        <div class="slide" data-notes="Demo setup checklist: Wireshark open with en0 selected, clear any existing filters, have AI service ready in browser tab. We'll start with basic 'dns' filter to discover services, then apply 'quic' filter for protocol analysis. Commands ready: 'dns', 'quic', 'udp.length > 1000', 'frame.time_delta < 0.1'. Encourage real-time questions during demo.">
+            <div class="slide-counter">8 / 16</div>
+            <div class="demo-highlight" style="text-align: center; padding: 60px;">
+                <h1 style="font-size: 3rem; margin-bottom: 30px;">LIVE DEMO SESSION</h1>
+                <h2>Real-Time AI Traffic Analysis</h2>
+                
+                <div style="margin: 40px 0;">
+                    <h3>Demo Command Sequence</h3>
+                    <div class="code-block"># 1. Start capture
+wireshark -i en0 -k
+
+# 2. Service discovery
+dns
+
+# 3. AI service identification  
+dns.qry.name contains "openai"
+
+# 4. QUIC protocol analysis
+quic
+
+# 5. Large payload detection
+quic and udp.length > 5000
+
+# 6. Streaming analysis
+quic and frame.time_delta < 0.1</div>
+                </div>
+                
+                <div class="two-column" style="margin-top: 30px;">
+                    <div class="feature-box">
+                        <h4>Phase 1: Setup & Discovery</h4>
+                        <p>Interface selection, DNS analysis, IP identification</p>
+                    </div>
+                    <div class="feature-box">
+                        <h4>Phase 2: Protocol Analysis</h4>
+                        <p>QUIC filtering, connection tracking, stream analysis</p>
+                    </div>
+                    <div class="feature-box">
+                        <h4>Phase 3: Pattern Recognition</h4>
+                        <p>Size analysis, timing patterns, behavioral identification</p>
+                    </div>
+                    <div class="feature-box">
+                        <h4>Phase 4: Statistical Analysis</h4>
+                        <p>I/O graphs, conversation analysis, performance metrics</p>
+                    </div>
+                </div>
+                
+                <p style="font-size: 1.1rem; color: #8b949e; margin-top: 30px;">
+                    <strong>Interactive Analysis - Questions Welcome</strong>
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 9: Chat Pattern Analysis -->
+        <div class="slide" data-notes="Demo filters for this slide: 'quic and ip.dst == [AI_IP] and udp.length < 3000' for requests, 'quic and ip.src == [AI_IP] and udp.length > 3000' for responses. Use Statistics → I/O Graphs with 1-second intervals to show burst patterns. Demonstrate how to calculate response times using frame.time_delta. Point out the asymmetric nature of AI conversations.">
+            <div class="slide-counter">9 / 16</div>
+            <h2>AI Traffic Pattern: Chat Conversations</h2>
+            
+            <div class="two-column">
+                <div>
+                    <h3>Observable Pattern Structure</h3>
+                    <div class="code-block">Timeline Analysis:
+                    
+t=0s   User → AI (800 bytes)
+       "Explain quantum computing"
+       
+t=2s   AI → User (15,000 bytes)
+       [Detailed explanation]
+       
+t=45s  User → AI (1,200 bytes)
+       "Give me an example"
+       
+t=47s  AI → User (8,000 bytes)
+       [Code example + explanation]</div>
+                    
+                    <h3>Traffic Characteristics</h3>
+                    <ul>
+                        <li><span class="highlight">Request Size:</span> 500-3,000 bytes</li>
+                        <li><span class="highlight">Response Size:</span> 3,000-50,000 bytes</li>
+                        <li><span class="highlight">Think Time:</span> 10-300 seconds</li>
+                        <li><span class="highlight">Response Time:</span> 1-15 seconds</li>
+                        <li><span class="highlight">Pattern:</span> Asymmetric, bursty</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3>Wireshark Analysis Commands</h3>
+                    <div class="code-block"># Chat request detection
+quic and ip.dst == [AI_IP] and udp.length < 3000
+
+# Large response detection
+quic and ip.src == [AI_IP] and udp.length > 3000
+
+# Conversation tracking
+quic.connection.number == [CONN_ID]
+
+# Response time calculation
+frame.time_delta and udp.length > 1000
+
+# Human timing patterns
+frame.time_delta > 10 and ip.dst == [AI_IP]</div>
+                    
+                    <h3>Statistical Analysis Tools</h3>
+                    <div class="feature-box">
+                        <h4>I/O Graph Setup</h4>
+                        <p>Statistics → I/O Graphs, 1-second intervals, filter: quic</p>
+                    </div>
+                    
+                    <div class="feature-box">
+                        <h4>Conversation Analysis</h4>
+                        <p>Statistics → Conversations → UDP, sort by bytes</p>
+                    </div>
+                    
+                    <div class="feature-box">
+                        <h4>Response Time Analysis</h4>
+                        <p>Custom column: frame.time_delta, filter responses</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-highlight">
+                <h3>Demo Focus: Statistics → I/O Graphs Analysis</h3>
+                <p>Visualize request/response cycles and identify conversation rhythms using 1-second interval graphs.</p>
+            </div>
+        </div>
+
+        <!-- Slide 10: Code Generation Patterns -->
+        <div class="slide" data-notes="Demo commands: 'quic and ip.dst == [AI_IP] and udp.length > 5000' for large requests, 'quic and ip.src == [AI_IP] and udp.length > 20000' for large responses. Use frame.time_delta > 10 to show longer processing times. Point out security implications - large responses may indicate IP extraction. Show how to use packet details to examine QUIC frame types.">
+            <div class="slide-counter">10 / 16</div>
+            <h2>AI Traffic Pattern: Code Generation</h2>
+            
+            <div class="two-column">
+                <div>
+                    <h3>Code Generation Signature</h3>
+                    <div class="code-block">Request Pattern:
+"Write a Python function that..."
+"Create a React component for..."
+"Debug this SQL query..."
+
+Size: 1,500-8,000 bytes
+Processing: 5-30 seconds
+Response: 10,000-100,000+ bytes</div>
+                    
+                    <h3>Traffic Characteristics</h3>
+                    <ul>
+                        <li><span class="highlight">Larger Requests:</span> Detailed specifications</li>
+                        <li><span class="highlight">Extended Processing:</span> Complex generation tasks</li>
+                        <li><span class="highlight">Very Large Responses:</span> Complete code solutions</li>
+                        <li><span class="highlight">Follow-up Patterns:</span> Iterative refinement</li>
+                    </ul>
+                    
+                    <div class="feature-box">
+                        <h4>Security Considerations</h4>
+                        <p>Monitor for excessive code extraction patterns</p>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>Detection and Analysis</h3>
+                    <div class="code-block"># Large request detection
+quic and ip.dst == [AI_IP] and udp.length > 5000
+
+# Very large response detection
+quic and ip.src == [AI_IP] and udp.length > 20000
+
+# Extended processing time
+frame.time_delta > 10
+
+# Bulk code extraction pattern
+quic and udp.length > 50000
+
+# Automated request detection
+frame.time_delta < 2 and udp.length > 2000</div>
+                    
+                    <h3>Anomaly Indicators</h3>
+                    <div class="pattern-card">
+                        <h4>Volume Anomalies</h4>
+                        <ul>
+                            <li>Responses > 100KB consistently</li>
+                            <li>High frequency code requests</li>
+                            <li>Sustained large transfers</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="pattern-card">
+                        <h4>Timing Anomalies</h4>
+                        <ul>
+                            <li>Automated request timing</li>
+                            <li>Absence of human think time</li>
+                            <li>Rapid iteration cycles</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-highlight">
+                <h3>Demo Command: Frame Details Analysis</h3>
+                <p>Right-click packet → Follow → QUIC Stream to examine complete code generation session</p>
+            </div>
+        </div>
+
+        <!-- Slide 11: Streaming Response Analysis -->
+        <div class="slide" data-notes="Demo commands: 'quic and frame.time_delta < 0.2 and udp.length > 100 and udp.length < 1000' for streaming detection. Show how to use packet details to examine QUIC frame types (0x08 for STREAM frames). Demonstrate Follow QUIC Stream feature. Use custom column for frame.time_delta to visualize streaming rhythm. Point out how streaming patterns indicate service responsiveness and user experience quality.">
+            <div class="slide-counter">11 / 16</div>
+            <h2>Streaming Response Analysis</h2>
+            
+            <div class="two-column">
+                <div>
+                    <h3>Streaming Pattern Recognition</h3>
+                    <div class="code-block">Streaming Signature:
+                    
+Request  → [800 bytes]
+Response ← [400 bytes] t=1.2s
+Response ← [380 bytes] t=1.3s  
+Response ← [420 bytes] t=1.4s
+Response ← [350 bytes] t=1.5s
+...continuing for 10-30 packets
+Final    ← [200 bytes] t=8.2s</div>
+                    
+                    <h3>Technical Implementation</h3>
+                    <ul>
+                        <li><span class="highlight">Server-Sent Events:</span> HTTP/2 streams</li>
+                        <li><span class="highlight">WebSockets:</span> Bidirectional communication</li>
+                        <li><span class="highlight">QUIC Streams:</span> Multiplexed data flows</li>
+                        <li><span class="highlight">Chunked Encoding:</span> Progressive delivery</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3>Analysis Commands</h3>
+                    <div class="code-block"># Streaming pattern detection
+quic and frame.time_delta < 0.2 and udp.length > 100 and udp.length < 1000
+
+# QUIC stream frame analysis
+quic.frame_type == 0x08
+
+# Rapid packet sequence
+quic and ip.src == [AI_IP] and frame.time_delta < 0.1
+
+# Stream completion detection
+quic.frame_type == 0x13
+
+# Token generation rate
+tshark -r capture.pcap -T fields -e frame.time_delta -Y "quic and udp.length < 1000"</div>
+                    
+                    <div class="feature-box">
+                        <h4>Performance Metrics</h4>
+                        <ul>
+                            <li>Token generation rate (words/sec)</li>
+                            <li>Inter-packet timing consistency</li>
+                            <li>Stream completion rates</li>
+                            <li>Network congestion impact</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-box">
+                        <h4>Quality Indicators</h4>
+                        <ul>
+                            <li>Consistent chunk timing</li>
+                            <li>Minimal packet loss</li>
+                            <li>Smooth delivery patterns</li>
+                            <li>Error/retry rates</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-highlight">
+                <h3>Demo Technique: Follow QUIC Stream + Custom Columns</h3>
+                <p>Right-click → Follow → QUIC Stream | Add column: frame.time_delta for timing analysis</p>
+            </div>
+        </div>
+
+        <!-- Slide 12: Anomaly Detection Framework -->
+        <div class="slide" data-notes="Demo statistical analysis: Statistics → Protocol Hierarchy to show QUIC percentage, Statistics → I/O Graphs with custom filters for baseline establishment. Commands: 'quic and udp.length > 100000' for large transfers, 'quic and frame.time_delta < 1 and udp.length > 500' for rapid requests. Show how to export data with File → Export Packet Dissections → CSV for further analysis. Demonstrate tshark command line for automated monitoring.">
+            <div class="slide-counter">12 / 16</div>
+            <h2>AI Traffic Anomaly Detection Framework</h2>
+            
+            <div class="two-column">
+                <div>
+                    <h3>Baseline Establishment</h3>
+                    <div class="code-block"># Baseline collection commands
+tshark -i en0 -w baseline.pcap -f "udp port 443"
+
+# Statistical analysis
+tshark -r baseline.pcap -T fields -e udp.length -Y "quic" | sort -n
+
+# Calculate statistics
+awk '{sum+=$1; n++} END {print "Mean:", sum/n, "Count:", n}'</div>
+                    
+                    <div class="feature-box">
+                        <h4>Normal Pattern Metrics</h4>
+                        <ul>
+                            <li>Request frequency: 1-10/minute</li>
+                            <li>Response size: 1KB-50KB</li>
+                            <li>Session duration: 5-60 minutes</li>
+                            <li>Processing time: 1-30 seconds</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>Anomaly Detection Filters</h3>
+                    <div class="code-block"># Volume-based anomalies
+quic and udp.length > 100000
+
+# Frequency-based anomalies  
+quic and frame.time_delta < 1 and udp.length > 500
+
+# Session duration anomalies
+quic.connection.number and frame.time_relative > 3600
+
+# Automated behavior detection
+frame.time_delta < 2 and ip.dst == [AI_IP]
+
+# Statistical threshold (3-sigma rule)
+# Implement: μ ± 3σ for size/timing thresholds</div>
+                    
+                    <div class="feature-box">
+                        <h4>Real-time Monitoring</h4>
+                        <ul>
+                            <li>tshark with live capture</li>
+                            <li>Custom threshold scripts</li>
+                            <li>Automated alerting</li>
+                            <li>Log export for SIEM</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pattern-grid">
+                <div class="pattern-card">
+                    <h4>Volume Anomalies</h4>
+                    <ul>
+                        <li>Request size > 50KB</li>
+                        <li>Response size > 500KB</li>
+                        <li>Frequency > 100 req/min</li>
+                    </ul>
+                </div>
+                
+                <div class="pattern-card">
+                    <h4>Timing Anomalies</h4>
+                    <ul>
+                        <li>Inter-request < 1 second</li>
+                        <li>Off-hours activity</li>
+                        <li>Session > 4 hours</li>
+                    </ul>
+                </div>
+                
+                <div class="pattern-card">
+                    <h4>Behavioral Anomalies</h4>
+                    <ul>
+                        <li>No human think time</li>
+                        <li>Identical request patterns</li>
+                        <li>Geographic inconsistencies</li>
+                    </ul>
+                </div>
+                
+                <div class="pattern-card">
+                    <h4>Protocol Anomalies</h4>
+                    <ul>
+                        <li>Unusual QUIC versions</li>
+                        <li>Missing 0-RTT packets</li>
+                        <li>Excessive connection resets</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Security Monitoring -->
+        <div class="slide" data-notes="Demo security filters: 'quic and udp.length > 50000' for data exfiltration, 'quic.frame_type == 0x1c' for connection issues, 'frame.time_delta < 0.5' for automation detection. Show integration example with tshark output to syslog. Commands for IP reputation checking via DNS lookups. Demonstrate export capabilities for correlation with other security tools.">
+            <div class="slide-counter">13 / 16</div>
+            <h2>AI Security Monitoring Implementation</h2>
+            
+            <div class="two-column">
+                <div>
+                    <h3>Security Monitoring Commands</h3>
+                    <div class="code-block"># Data exfiltration detection
+quic and udp.length > 50000
+
+# Authentication anomalies
+quic and not tls.handshake
+
+# API abuse patterns
+frame.time_delta < 0.5 and udp.length > 1000
+
+# Connection manipulation
+quic.frame_type == 0x1c or quic.frame_type == 0x1d
+
+# Bulk download detection
+quic and ip.src == [AI_IP] and udp.length > 50000 and frame.time_delta < 1.0</div>
+                    
+                    <h3>Automated Monitoring</h3>
+                    <div class="code-block"># Real-time monitoring script
+tshark -i en0 -l -T fields -e ip.src -e udp.length -Y "quic and udp.length > 50000" | \
+while read ip size; do
+  echo "ALERT: Large transfer from $ip ($size bytes)"
+  logger "AI_MONITOR: Anomaly detected - $ip:$size"
+done</div>
+                </div>
+                
+                <div>
+                    <h3>Integration Points</h3>
+                    <div class="feature-box">
+                        <h4>SIEM Integration</h4>
+                        <div class="code-block"># Export to SIEM
+tshark -r capture.pcap -T json -Y "quic" > siem_export.json
+
+# Syslog integration
+logger -p local0.warning "AI_TRAFFIC_ANOMALY: $alert_details"</div>
+                    </div>
+                    
+                    <div class="feature-box">
+                        <h4>Threat Intelligence</h4>
+                        <div class="code-block"># IP reputation check
+dig +short [suspicious_ip].zen.spamhaus.org
+
+# DNS-based threat intel
+tshark -T fields -e ip.src -Y "quic" | sort -u > ip_list.txt</div>
+                    </div>
+                    
+                    <div class="feature-box">
+                        <h4>Automated Response</h4>
+                        <div class="code-block"># Firewall integration
+iptables -A INPUT -s [malicious_ip] -j DROP
+
+# Rate limiting
+tc qdisc add dev eth0 root handle 1: htb default 10</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pattern-grid">
+                <div class="pattern-card">
+                    <h4>Authentication Issues</h4>
+                    <p>Missing TLS handshakes, certificate anomalies, unusual connection patterns</p>
+                </div>
+                
+                <div class="pattern-card">
+                    <h4>Data Exfiltration</h4>
+                    <p>Large uploads, bulk downloads, off-hours transfers, geographic anomalies</p>
+                </div>
+                
+                <div class="pattern-card">
+                    <h4>API Abuse</h4>
+                    <p>Automated patterns, rate violations, unusual user agents, scripted interactions</p>
+                </div>
+                
+                <div class="pattern-card">
+                    <h4>Prompt Injection</h4>
+                    <p>Large prompts, repeated patterns, unusual encodings, error spikes</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Performance Analysis -->
+        <div class="slide" data-notes="Demo performance analysis: Statistics → Service Response Time for latency analysis, Statistics → I/O Graphs for throughput visualization. Show how to calculate response time percentiles using tshark. Commands: 'tcp.analysis.ack_rtt' for RTT analysis, custom columns for performance metrics. Demonstrate export to CSV for detailed analysis in external tools.">
+            <div class="slide-counter">14 / 16</div>
+            <h2>AI Service Performance Analysis</h2>
+            
+            <div class="two-column">
+                <div>
+                    <h3>Performance Measurement Commands</h3>
+                    <div class="code-block"># Response time analysis
+tshark -r capture.pcap -T fields -e frame.time_delta -Y "quic and ip.src == [AI_IP]"
+
+# Throughput calculation
+tshark -r capture.pcap -T fields -e frame.len -e frame.time_epoch -Y "quic"
+
+# Connection establishment timing
+tshark -r capture.pcap -Y "quic.long_packet_type == 0" -T fields -e frame.time_delta
+
+# QUIC 0-RTT usage analysis
+tshark -r capture.pcap -Y "quic.short_packet_type == 1" | wc -l</div>
+                    
+                    <h3>Key Metrics</h3>
+                    <div class="feature-box">
+                        <h4>Latency Analysis</h4>
+                        <ul>
+                            <li>Connection establishment time</li>
+                            <li>First byte time (TTFB)</li>
+                            <li>Response completion time</li>
+                            <li>Round-trip time distribution</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>Statistical Analysis</h3>
+                    <div class="code-block"># Calculate percentiles
+tshark -r capture.pcap -T fields -e frame.time_delta -Y "quic" | \
+sort -n | awk '{
+  values[NR] = $1
+  sum += $1
+}
+END {
+  print "50th percentile:", values[int(NR*0.5)]
+  print "95th percentile:", values[int(NR*0.95)]
+  print "99th percentile:", values[int(NR*0.99)]
+  print "Mean:", sum/NR
+}'</div>
+                    
+                    <div class="feature-box">
+                        <h4>QUIC Performance Benefits</h4>
+                        <ul>
+                            <li>0-RTT connection resumption rates</li>
+                            <li>Connection migration success</li>
+                            <li>Multiplexing efficiency</li>
+                            <li>Congestion control effectiveness</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-box">
+                        <h4>SLA Monitoring</h4>
+                        <ul>
+                            <li>Availability tracking</li>
+                            <li>Error rate monitoring</li>
+                            <li>Capacity planning metrics</li>
+                            <li>Performance regression detection</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-highlight">
+                <h3>Wireshark Performance Tools</h3>
+                <p><strong>Statistics → Service Response Time:</strong> Automated latency analysis<br>
+                <strong>Statistics → I/O Graphs:</strong> Throughput and bandwidth visualization<br>
+                <strong>Statistics → Conversations:</strong> Connection-level performance analysis</p>
+            </div>
+        </div>
+
+        <!-- Slide 15: Implementation Roadmap -->
+        <div class="slide" data-notes="Implementation guidance: Start with manual analysis, establish baselines using tshark automation, integrate with existing monitoring. Commands for automation: cron jobs with tshark, log rotation, alert thresholds. Discuss integration with Splunk, ELK stack, Grafana. Emphasize importance of cross-functional collaboration between network, security, and application teams.">
+            <div class="slide-counter">15 / 16</div>
+            <h2>Production Implementation Strategy</h2>
+            
+            <div class="two-column">
+                <div>
+                    <h3>Phase 1: Foundation (Week 1-2)</h3>
+                    <div class="code-block"># Initial deployment
+apt-get install wireshark tshark
+usermod -a -G wireshark $USER
+
+# Basic capture setup
+tshark -i eth0 -w /var/log/ai_traffic.pcap -b filesize:100000 -b files:10
+
+# Service discovery
+tshark -i eth0 -Y "dns.qry.name contains api" -T fields -e dns.qry.name</div>
+                    
+                    <h3>Phase 2: Monitoring (Week 3-4)</h3>
+                    <div class="code-block"># Automated baseline collection
+#!/bin/bash
+tshark -i eth0 -a duration:3600 -w baseline_$(date +%Y%m%d).pcap -Y "quic"
+
+# Real-time anomaly detection
+tshark -i eth0 -Y "quic and udp.length > 50000" -T fields -e ip.src -e udp.length | \
+while read ip size; do
+  echo "$(date): ANOMALY $ip $size" >> /var/log/ai_anomalies.log
+done</div>
+                    
+                    <h3>Phase 3: Integration (Week 5-6)</h3>
+                    <div class="code-block"># SIEM integration
+tshark -r capture.pcap -T json -Y "quic" | \
+jq '.[] | {timestamp: ._source.layers.frame["frame.time"], src: ._source.layers.ip["ip.src"], size: ._source.layers.udp["udp.length"]}' | \
+curl -X POST -H "Content-Type: application/json" -d @- http://siem-server/api/events</div>
+                </div>
+                
+                <div>
+                    <h3>Tools & Integration</h3>
+                    <div class="feature-box">
+                        <h4>Capture & Analysis</h4>
+                        <ul>
+                            <li>tshark (automated capture)</li>
+                            <li>Wireshark (interactive analysis)</li>
+                            <li>Suricata (IDS integration)</li>
+                            <li>ntopng (real-time monitoring)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-box">
+                        <h4>Data Processing</h4>
+                        <div class="code-block"># ELK Stack integration
+filebeat.inputs:
+- type: log
+  paths:
+    - /var/log/ai_anomalies.log
+  processors:
+    - dissect:
+        tokenizer: "%{timestamp}: %{event_type} %{ip} %{size}"</div>
+                    </div>
+                    
+                    <div class="feature-box">
+                        <h4>Monitoring & Alerting</h4>
+                        <div class="code-block"># Grafana dashboard query
+rate(ai_traffic_bytes_total[5m]) > 1000000
+
+# Prometheus metrics export
+echo "ai_anomaly_count $(grep ANOMALY /var/log/ai_anomalies.log | wc -l)" | \
+curl -X POST --data-binary @- http://pushgateway:9091/metrics/job/ai_monitor</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-highlight">
+                <h3>Success Metrics & KPIs</h3>
+                <p><strong>Detection Rate:</strong> >95% anomaly identification | <strong>False Positives:</strong> <5% | <strong>MTTR:</strong> <60 seconds | <strong>Coverage:</strong> 100% AI traffic</p>
+            </div>
+        </div>
+
+        <!-- Slide 16: Q&A -->
+        <div class="slide" data-notes="Encourage technical questions about: scaling tshark for high-volume networks, integration challenges with existing security tools, performance impact of deep packet inspection, legal/privacy considerations for traffic monitoring, advanced automation with machine learning, emerging protocols beyond QUIC. Be prepared to discuss specific implementation details, tool recommendations, and troubleshooting common issues.">
+            <div class="slide-counter">16 / 16</div>
+            <div class="demo-highlight" style="text-align: center; padding: 80px;">
+                <h1 style="font-size: 3rem; margin-bottom: 30px;">Q&A SESSION</h1>
+                <h2>Technical Discussion & Implementation</h2>
+                
+                <div style="margin: 50px 0;">
+                    <div class="two-column">
+                        <div class="feature-box">
+                            <h4>Implementation</h4>
+                            <ul>
+                                <li>tshark automation strategies</li>
+                                <li>High-volume network scaling</li>
+                                <li>Performance optimization</li>
+                                <li>Integration architectures</li>
+                            </ul>
+                        </div>
+                        <div class="feature-box">
+                            <h4>Security & Compliance</h4>
+                            <ul>
+                                <li>Privacy implications</li>
+                                <li>Legal monitoring boundaries</li>
+                                <li>Data retention policies</li>
+                                <li>Incident response workflows</li>
+                            </ul>
+                        </div>
+                        <div class="feature-box">
+                            <h4>Advanced Topics</h4>
+                            <ul>
+                                <li>Machine learning integration</li>
+                                <li>Emerging protocol support</li>
+                                <li>Cloud-native deployments</li>
+                                <li>Custom dissector development</li>
+                            </ul>
+                        </div>
+                        <div class="feature-box">
+                            <h4>Practical Applications</h4>
+                            <ul>
+                                <li>Research environment monitoring</li>
+                                <li>Infrastructure optimization</li>
+                                <li>Policy enforcement</li>
+                                <li>Capacity planning</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 50px;">
+                    <h3 style="color: #8b949e;">Technical Resources</h3>
+                    <div class="code-block" style="text-align: left; font-size: 0.8rem;"># Documentation & References
+man tshark                    # Command line reference
+wireshark.org/docs/          # Official documentation
+github.com/wireshark/        # Source code and dissectors
+tools.ietf.org/html/rfc9000  # QUIC specification</div>
+                </div>
+            </div>
+        </div><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wireshark for AI Traffic Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow: hidden;
+        }
+
+        .presentation-container {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            padding: 50px;
+            max-width: 1200px;
+            width: 90%;
+            min-height: 700px;
+            display: none;
+            animation: slideIn 0.6s ease-out;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .slide h2 {
+            font-size: 2.2rem;
+            color: #2d3748;
+            margin-bottom: 25px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .slide h3 {
+            font-size: 1.6rem;
+            color: #4a5568;
+            margin: 20px 0 15px 0;
+            font-weight: 500;
+        }
+
+        .slide p, .slide li {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            color: #2d3748;
+        }
+
+        .slide ul {
+            margin-left: 25px;
+            margin-bottom: 20px;
+        }
+
+        .code-block {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Fira Code', 'Monaco', 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            margin: 20px 0;
+            overflow-x: auto;
+            border-left: 4px solid #667eea;
+            white-space: pre-wrap;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 25px 0;
+        }
+
+        .feature-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 15px 0;
+            box-shadow: 0 8px 25px rgba(240, 147, 251, 0.3);
+        }
+
+        .feature-box h4 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: linear-gradient(145deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        .slide-counter {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .demo-highlight {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(132, 250, 176, 0.3);
+        }
+
+        .demo-highlight h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .pattern-card {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #f093fb;
+            box-shadow: 0 5px 15px rgba(255, 236, 210, 0.4);
+        }
+
+        .pattern-card h4 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .speaker-notes {
+            position: fixed;
+            bottom: -300px;
+            left: 0;
+            right: 0;
+            height: 280px;
+            background: rgba(26, 32, 44, 0.95);
+            backdrop-filter: blur(10px);
+            color: #e2e8f0;
+            padding: 20px;
+            transition: bottom 0.3s ease;
+            overflow-y: auto;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .speaker-notes.show {
+            bottom: 0;
+        }
+
+        .notes-toggle {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: linear-gradient(145deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            z-index: 1001;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .notes-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px;
+                min-height: 600px;
+            }
+            
+            .slide h1 {
+                font-size: 2rem;
+            }
+            
+            .slide h2 {
+                font-size: 1.5rem;
+            }
+            
+            .two-column {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <button class="notes-toggle" onclick="toggleNotes()">Toggle Speaker Notes</button>
+        
+        <!-- Slide 1: Title -->
+        <div class="slide active" data-notes="Welcome everyone. Today we're diving into network analysis with a focus on modern AI services. This is particularly relevant as AI becomes ubiquitous in our infrastructure. Demo prep: Open Wireshark, select Wi-Fi interface (en0/en1), have ChatGPT/Claude ready in browser. Key technical focus: QUIC protocol analysis for encrypted traffic.">
+            <div class="slide-counter">1 / 16</div>
+            <h1>Network Traffic Analysis for AI Services</h1>
+            <h2 style="text-align: center; color: #8b949e; margin-top: 30px;">Wireshark Analysis of Modern AI Communications</h2>
+            
+            <div style="text-align: center; margin-top: 40px;">
+                <div class="feature-box" style="display: inline-block; margin: 15px; max-width: 300px;">
+                    <h4>Deep Packet Inspection</h4>
+                    <p>Protocol analysis and pattern recognition</p>
+                </div>
+                <div class="feature-box" style="display: inline-block; margin: 15px; max-width: 300px;">
+                    <h4>QUIC Protocol Focus</h4>
+                    <p>Modern AI service communications</p>
+                </div>
+                <div class="feature-box" style="display: inline-block; margin: 15px; max-width: 300px;">
+                    <h4>Anomaly Detection</h4>
+                    <p>Security monitoring and threat identification</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px; font-size: 0.9rem; color: #8b949e;">
+                <strong> Technical Session</strong><br>
+                Live Demo + Interactive Analysis <br>
+                Raj Etta, Oracle Inc
+            </div>
+        </div>
+
+        <!-- Slide 2: Agenda -->
+        <div class="slide" data-notes="Session structure: 8min theory, 12min live demo with real commands, 5min Q&A. Demo commands to prepare: 'quic', 'dns', 'udp.length > 1000'. Emphasize this is hands-on technical analysis, not just theory. Ask audience about their current network monitoring approaches.">
+            <div class="slide-counter">2 / 16</div>
+            <h2>Technical Session Agenda</h2>
+            
+            <div class="two-column">
+                <div>
+                    <h3>Theory & Background (8 min)</h3>
+                    <ul>
+                        <li>Wireshark fundamentals for encrypted traffic</li>
+                        <li>Classic protocol analysis techniques</li>
+                        <li>TCP → QUIC protocol evolution</li>
+                        <li>AI service architecture patterns</li>
+                    </ul>
+                    
+                    <h3>Live Demo Session (12 min)</h3>
+                    <div class="code-block"># Demo Commands Preview
+wireshark -i en0 -k
+# Filter: quic
+# Filter: dns.qry.name contains "openai"
+# Filter: udp.length > 5000</div>
+                    
+                    <ul>
+                        <li>Real-time traffic capture</li>
+                        <li>AI service identification via DNS</li>
+                        <li>QUIC stream analysis</li>
+                        <li>Anomaly detection filters</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3>Learning Outcomes</h3>
+                    <div class="feature-box">
+                        <h4>Technical Proficiency</h4>
+                        <p>Master QUIC analysis for AI traffic patterns</p>
+                    </div>
+                    <div class="feature-box">
+                        <h4>Security Implementation</h4>
+                        <p>Deploy production monitoring systems</p>
+                    </div>
+                    <div class="feature-box">
+                        <h4>Performance Analysis</h4>
+                        <p>Optimize network infrastructure for AI workloads</p>
+                    </div>
+                    
+                    <h3>Interactive Q&A (5+ min)</h3>
+                    <ul>
+                        <li>Implementation challenges</li>
+                        <li>Integration with existing infrastructure</li>
+                        <li>Scaling and automation</li>
+                        <li>Real-world deployment scenarios</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Wireshark Fundamentals -->
+        <div class="slide" data-notes="Wireshark remains the gold standard for packet analysis. Emphasize that while the GUI might look dated, its analysis capabilities are unmatched. For engineering faculty, highlight the extensibility through Lua scripting and the robust filtering engine. The key point here is that Wireshark excels at metadata analysis even when content is encrypted.">
+            <div class="slide-counter">3 / 16</div>
+            <h2>Wireshark: The Network Analysis Foundation</h2>
+            
+            <div class="two-column">
+                <div>
+                    <h3>Core Capabilities</h3>
+                    <ul>
+                        <li><span class="highlight">Deep Packet Inspection</span> - Layer 2-7 analysis</li>
+                        <li><span class="highlight">Protocol Dissection</span> - 3000+ protocol parsers</li>
+                        <li><span class="highlight">Real-time Capture</span> - Live traffic monitoring</li>
+                        <li><span class="highlight">Statistical Analysis</span> - Performance metrics</li>
+                        <li><span class="highlight">Extensibility</span> - Lua scripting support</li>
+                    </ul>
+                    
+                    <h3>Modern Challenges</h3>
+                    <ul>
+                        <li>Encrypted traffic (HTTPS/TLS)</li>
+                        <li>High-speed networks (10Gbps+)</li>
+                        <li>Container networking complexity</li>
+                        <li>Cloud-native architectures</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3>AI Traffic Analysis Context</h3>
+                    <div class="feature-box">
+                        <h4>Why AI Traffic Matters</h4>
+                        <ul>
+                            <li>Massive data transfers</li>
+                            <li>Real-time inference requirements</li>
+                            <li>API-centric architectures</li>
+                            <li>Security and privacy concerns</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-box" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #2d3748;">
+                        <h4>Key Insight</h4>
+                        <p>Even with encryption, network metadata reveals behavioral patterns, performance characteristics, and potential security issues.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Classic Traffic Analysis -->
+        <div class="slide" data-notes="Before diving into AI, let's establish the foundation. Classic traffic analysis focuses on these core patterns. HTTP/HTTPS analysis is fundamental - even though we can't see encrypted content, connection patterns, timing, and sizes tell a story. DNS analysis is particularly valuable as it reveals service dependencies and potential security issues.">
+            <div class="slide-counter">4 / 16</div>
+            <h2>Classic Traffic Analysis Scenarios</h2>
+            
+            <div class="pattern-grid">
+                <div class="pattern-card">
+                    <h4>🌐 Web Traffic Analysis</h4>
+                    <p><strong>HTTP/HTTPS Patterns:</strong></p>
+                    <ul>
+                        <li>Request/response timing</li>
+                        <li>Content-Length analysis</li>
+                        <li>User-Agent identification</li>
+                        <li>Cookie and session tracking</li>
+                    </ul>
+                </div>
+                
+                <div class="pattern-card">
+                    <h4>📡 API Communication</h4>
+                    <p><strong>RESTful Service Patterns:</strong></p>
+                    <ul>
+                        <li>JSON payload analysis</li>
+                        <li>Authentication token flows</li>
+                        <li>Rate limiting detection</li>
+                        <li>Error response patterns</li>
+                    </ul>
+                </div>
+                
+                <div class="pattern-card">
+                    <h4>🔍 DNS Analysis</h4>
+                    <p><strong>Name Resolution Patterns:</strong></p>
+                    <ul>
+                        <li>Domain reputation checking</li>
+                        <li>DNS tunneling detection</li>
+                        <li>Service discovery mapping</li>
+                        <li>Geographic routing analysis</li>
+                    </ul>
+                </div>
+                
+                <div class="pattern-card">
+                    <h4>⚡ Performance Monitoring</h4>
+                    <p><strong>Network Health Metrics:</strong></p>
+                    <ul>
+                        <li>Round-trip time analysis</li>
+                        <li>Throughput measurement</li>
+                        <li>Packet loss detection</li>
+                        <li>Congestion identification</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="code-block">
+# Classic Wireshark Filters
+http.request.method == "POST"           # API calls
+dns.qry.name contains "api"             # Service discovery
+tcp.analysis.retransmission            # Network issues
+frame.len > 1000                        # Large transfers</div>
+        </div>
+
+        <!-- Slide 5: Protocol Evolution -->
+        <div class="slide" data-notes="This slide is crucial for understanding why AI traffic analysis is different. QUIC represents a paradigm shift - it's designed for the modern internet with mobile-first, low-latency requirements. Google developed QUIC specifically to address HTTP/2 over TCP limitations. For AI services, QUIC provides 0-RTT startup, better congestion control, and multiplexing without head-of-line blocking.">
+            <div class="slide-counter">5 / 16</div>
+            <h2>Protocol Evolution: TCP → QUIC</h2>
+            
+            <div class="two-column">
+                <div>
+                    <h3>Traditional TCP/TLS Stack</h3>
+                    <div class="code-block">
+┌─────────────────┐
+│   HTTP/2        │
+├─────────────────┤
+│   TLS 1.3       │
+├─────────────────┤
+│   TCP           │
+├─────────────────┤
+│   IP            │
+└─────────────────┘
+
+Connection Setup:
+1. TCP handshake (1 RTT)
+2. TLS handshake (1-2 RTT)
+3. HTTP/2 negotiation
+Total: 2-3 RTT before data</div>
+                    
+                    <h3>Limitations</h3>
+                    <ul>
+                        <li>Head-of-line blocking</li>
+                        <li>Connection setup latency</li>
+                        <li>Poor mobile performance</li>
+                        <li>Middlebox interference</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3>Modern QUIC Stack</h3>
+                    <div class="code-block">
+┌─────────────────┐
+│   HTTP/3        │
+├─────────────────┤
+│   QUIC          │
+│ (includes TLS)  │
+├─────────────────┤
+│   UDP           │
+├─────────────────┤
+│   IP            │
+└─────────────────┘
+
+Connection Setup:
+1. QUIC handshake (0-1 RTT)
+2. Immediate data transfer
+Total: 0-1 RTT before data</div>
+                    
+                    <h3>AI Service Benefits</h3>
+                    <div class="feature-box">
+                        <h4>🚀 Performance</h4>
+                        <ul>
+                            <li>0-RTT connection resumption</li>
+                            <li>Multiplexing without blocking</li>
+                            <li>Better congestion control</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-box">
+                        <h4>🔧 Reliability</h4>
+                        <ul>
+                            <li>Connection migration</li>
+                            <li>Forward error correction</li>
+                            <li>Stream-level flow control</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: AI Service Architecture -->
+        <div class="slide" data-notes="Understanding AI service architecture is key to effective traffic analysis. Modern AI services are distributed systems with multiple components. The API gateway handles authentication and rate limiting. Model servers might be containerized or serverless. CDNs cache static content and models. This architecture creates distinct traffic patterns we can identify and monitor.">
+            <div class="slide-counter">6 / 16</div>
+            <h2>AI Service Architecture & Traffic Patterns</h2>
+            
+            <div style="text-align: center; margin-bottom: 30px;">
+                <div class="code-block" style="font-size: 0.9rem;">
+User → CDN/Edge → API Gateway → Load Balancer → Model Server(s) → Storage/Vector DB
+ ↓        ↓           ↓             ↓              ↓               ↓
+QUIC   Caching   Authentication  Routing     Inference       Data Retrieval</div>
+            </div>
+            
+            <div class="pattern-grid">
+                <div class="pattern-card">
+                    <h4>🎯 API Gateway Patterns</h4>
+                    <ul>
+                        <li>Authentication flows (OAuth, API keys)</li>
+                        <li>Rate limiting responses (429 codes)</li>
+                        <li>Request validation and routing</li>
+                        <li>Response aggregation</li>
+                    </ul>
+                </div>
+                
+                <div class="pattern-card">
+                    <h4>🧠 Model Inference Patterns</h4>
+                    <ul>
+                        <li>Variable response times (complexity-dependent)</li>
+                        <li>Streaming vs. batch responses</li>
+                        <li>Multi-modal data flows</li>
+                        <li>Context window management</li>
+                    </ul>
+                </div>
+                
+                <div class="pattern-card">
+                    <h4>📊 Data Flow Characteristics</h4>
+                    <ul>
+                        <li>Asymmetric traffic (small requests, large responses)</li>
+                        <li>Bursty patterns (human interaction)</li>
+                        <li>Long-tail latency distribution</li>
+                        <li>Context-dependent sizing</li>
+                    </ul>
+                </div>
+                
+                <div class="pattern-card">
+                    <h4>🔄 Caching & CDN Patterns</h4>
+                    <ul>
+                        <li>Model weight distribution</li>
+                        <li>Prompt caching strategies</li>
+                        <li>Geographic edge deployment</li>
+                        <li>Cache hit/miss ratios</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="demo-highlight">
+                <h3>🎯 Traffic Analysis Focus Areas</h3>
+                <p>We'll focus on <strong>client-to-API</strong> communication patterns, which reveal user behavior, service performance, and potential security issues.</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: QUIC Analysis Fundamentals -->
+        <div class="slide" data-notes="Now we get into the technical details of QUIC analysis. Unlike TCP, QUIC doesn't have separate connection establishment - it's all integrated. Connection IDs are crucial for tracking multiplexed streams. Frame types tell us what's happening at the application level. This is where Wireshark's QUIC dissector becomes invaluable.">
+            <div class="slide-counter">7 / 16</div>
+            <h2>QUIC Protocol Analysis in Wireshark</h2>
+            
+            <div class="two-column">
+                <div>
+                    <h3>Key QUIC Concepts</h3>
+                    <ul>
+                        <li><span class="highlight">Connection ID</span> - Persistent connection tracking</li>
+                        <li><span class="highlight">Packet Numbers</span> - Monotonic, never reused</li>
+                        <li><span class="highlight">Streams</span> - Multiplexed data flows</li>
+                        <li><span class="highlight">Frames</span> - Application data units</li>
+                        <li><span class="highlight">0-RTT</span> - Immediate data transmission</li>
+                    </ul>
+                    
+                    <h3>Wireshark QUIC Fields</h3>
+                    <div class="code-block">quic.connection.number
+quic.packet_number
+quic.frame_type
+quic.stream_id
+udp.length
+quic.payload_length</div>
+                </div>
+                
+                <div>
+                    <h3>QUIC Frame Types (Key Ones)</h3>
+                    <div class="code-block">0x00-0x03: STREAM frames
+0x04: MAX_DATA
+0x05: MAX_STREAM_DATA  
+0x06: MAX_STREAMS
+0x08: STREAM_DATA_BLOCKED
+0x1c: CONNECTION_CLOSE
+0x1d: APPLICATION_CLOSE</div>
+                    
+                    <h3>AI-Specific QUIC Patterns</h3>
+                    <div class="feature-box">
+                        <h4>Request Pattern</h4>
+                        <p>Small STREAM frames with user prompts</p>
+                    </div>
+                    <div class="feature-box">
+                        <h4>Response Pattern</h4>
+                        <p>Large STREAM frames or streaming chunks</p>
+                    </div>
+                    <div class="feature-box">
+                        <h4>Flow Control</h4>
+                        <p>MAX_STREAM_DATA frames for large responses</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="code-block"># Essential QUIC Filters for AI Analysis
+quic and udp.length > 1000                    # Large AI responses
+quic.frame_type == 0x00 and udp.length < 2000 # Small requests (prompts)
+quic and frame.time_delta < 0.1               # Streaming responses</div>
+        </div>
+
+        <!-- Slide 8: Demo Transition -->
+        <div class="slide" data-notes="This is our transition to the live demo. Make sure your setup is ready - Wireshark open, AI service accessible, capture interface selected. Remind the audience that they'll see real-time analysis and encourage questions during the demo. This interactive portion is the heart of the presentation.">
+            <div class="slide-counter">8 / 16</div>
+            <div class="demo-highlight" style="text-align: center; padding: 80px;">
+                <h1 style="font-size: 4rem; margin-bottom: 40px;">🔴 LIVE DEMO</h1>
+                <h2>Real-Time AI Traffic Analysis</h2>
+                
+                <div style="margin: 50px 0;">
+                    <h3>Demo Scenarios</h3>
+                    <div class="two-column" style="margin-top: 30px;">
+                        <div class="feature-box">
+                            <h4>1. Basic Setup & Capture</h4>
+                            <p>Interface selection, initial filtering, basic traffic observation</p>
+                        </div>
+                        <div class="feature-box">
+                            <h4>2. AI Service Discovery</h4>
+                            <p>DNS analysis, IP identification, QUIC detection</p>
+                        </div>
+                        <div class="feature-box">
+                            <h4>3. Pattern Recognition</h4>
+                            <p>Chat patterns, code generation, streaming responses</p>
+                        </div>
+                        <div class="feature-box">
+                            <h4>4. Anomaly Detection</h4>
+                            <p>Statistical analysis, threshold setting, alert configuration</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <p style="font-size: 1.3rem; color: #666; margin-top: 40px;">
+                    <strong>Interactive Session - Questions Encouraged!</strong>
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 9: Chat Pattern Analysis -->
+        <div class="slide" data-notes="These patterns represent what we typically observe during the demo. Chat conversations have predictable size and timing characteristics. The key insight is that even encrypted traffic reveals behavioral patterns. Human conversations have natural pauses, while automated systems show more regular timing.">
+            <div class="slide-counter">9 / 16</div>
+            <h2>AI Traffic Pattern: Chat Conversations</h2>
+            
+            <div class="two-column">
+                <div>
+                    <h3>Typical Chat Pattern</h3>
+                    <div class="code-block">Timeline Analysis:
+                    
+t=0s   User → AI (800 bytes)
+       "Explain quantum computing"
+       
+t=2s   AI → User (15,000 bytes)
+       [Detailed explanation]
+       
+t=45s  User → AI (1,200 bytes)
+       "Give me an example"
+       
+t=47s  AI → User (8,000 bytes)
+       [Code example + explanation]</div>
+                    
+                    <h3>Observable Characteristics</h3>
+                    <ul>
+                        <li><span class="highlight">Request Size:</span> 500-3,000 bytes</li>
+                        <li><span class="highlight">Response Size:</span> 3,000-50,000 bytes</li>
+                        <li><span class="highlight">Think Time:</span> 10-300 seconds</li>
+                        <li><span class="highlight">Response Time:</span> 1-15 seconds</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3>Wireshark Analysis</h3>
+                    <div class="code-block"># Chat Detection Filters
+quic and ip.dst == [AI_IP] and udp.length < 3000
+
+# Response Detection
+quic and ip.src == [AI_IP] and udp.length > 3000
+
+# Conversation Flow
+quic.connection.number == [CONN_ID]</div>
+                    
+                    <h3>Performance Metrics</h3>
+                    <div class="feature-box">
+                        <h4>📊 I/O Graph Analysis</h4>
+                        <p>Burst patterns, request/response cycles</p>
+                    </div>
+                    
+                    <div class="feature-box">
+                        <h4>⏱️ Timing Analysis</h4>
+                        <p>Response time distribution, outlier detection</p>
+                    </div>
+                    
+                    <div class="feature-box">
+                        <h4>📈 Trend Analysis</h4>
+                        <p>Session duration, request complexity evolution</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-highlight">
+                <h3>🔍 Demo Focus: Statistics → I/O Graphs</h3>
+                <p>We'll use Wireshark's I/O graphs to visualize request/response patterns and identify conversation rhythms.</p>
+            </div>
+        </div>
+
+        <!-- Slide 10: Code Generation Patterns -->
+        <div class="slide" data-notes="Code generation represents a different traffic signature. Requests are typically longer (detailed requirements) and responses are much larger. The processing time is also longer due to the complexity of code generation. This pattern is easily distinguishable from chat and can indicate potential intellectual property concerns if excessive.">
+            <div class="slide-counter">10 / 16</div>
+            <h2>AI Traffic Pattern: Code Generation</h2>
+            
+            <div class="two-column">
+                <div>
+                    <h3>Code Generation Characteristics</h3>
+                    <div class="code-block">Request Pattern:
+"Write a Python function that..."
+"Create a React component for..."
+"Debug this SQL query..."
+
+Size: 1,500-8,000 bytes
+Processing: 5-30 seconds
+Response: 10,000-100,000+ bytes</div>
+                    
+                    <h3>Traffic Signatures</h3>
+                    <ul>
+                        <li><span class="highlight">Larger Requests:</span> Detailed specifications</li>
+                        <li><span class="highlight">Longer Processing:</span> Complex generation tasks</li>
+                        <li><span class="highlight">Very Large Responses:</span> Complete code solutions</li>
+                        <li><span class="highlight">Follow-up Patterns:</span> Debugging, modifications</li>
+                    </ul>
+                    
+                    <div class="feature-box">
+                        <h4>🚨 Security Consideration</h4>
+                        <p>Large code responses may indicate IP extraction or excessive usage patterns</p>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>Detection Filters</h3>
+                    <div class="code-block"># Large request detection
+quic and ip.dst == [AI_IP] and udp.length > 5000
+
+# Very large responses
+quic and ip.src == [AI_IP] and udp.length > 20000
+
+# Long processing time
+frame.time_delta > 10</div>
+                    
+                    <h3>Anomaly Indicators</h3>
+                    <div class="pattern-card">
+                        <h4>📊 Volume Anomalies</h4>
+                        <ul>
+                            <li>Responses > 100KB consistently</li>
+                            <li>High frequency code requests</li>
+                            <li>Bulk downloading patterns</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="pattern-card">
+                        <h4>⏰ Timing Anomalies</h4>
+                        <ul>
+                            <li>Automated request timing</li>
+                            <li>No human "think time"</li>
+                            <li>Rapid iteration cycles</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Streaming Response Analysis -->
+        <div class="slide" data-notes="Streaming responses are fascinating from a network perspective. Instead of one large response, AI services send many small chunks to provide real-time feedback. This creates a distinctive 'heartbeat' pattern in network traffic. The timing between chunks can indicate service load and processing complexity.">
+            <div class="slide-counter">11 / 16</div>
+            <h2>Streaming Response Analysis</h2>
+            
+            <div class="two-column">
+                <div>
+                    <h3>Streaming Pattern Recognition</h3>
+                    <div class="code-block">Streaming Signature:
+                    
+Request  → [800 bytes]
+Response ← [400 bytes] t=1.2s
+Response ← [380 bytes] t=1.3s  
+Response ← [420 bytes] t=1.4s
+Response ← [350 bytes] t=1.5s
+...continuing for 10-30 packets
+Final    ← [200 bytes] t=8.2s</div>
+                    
+                    <h3>Technical Implementation</h3>
+                    <ul>
+                        <li><span class="highlight">Server-Sent Events:</span> HTTP/2 streams</li>
+                        <li><span class="highlight">WebSockets:</span> Bidirectional communication</li>
+                        <li><span class="highlight">QUIC Streams:</span> Multiplexed data flows</li>
+                        <li><span class="highlight">Chunked Encoding:</span> Progressive delivery</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3>Analysis Techniques</h3>
+                    <div class="code-block"># Streaming detection
+quic and frame.time_delta < 0.2 and udp.length > 100 and udp.length < 1000
+
+# Stream completion
+quic.frame_type == 0x13
+
+# Rapid packet sequence
+quic and ip.src == [AI_IP] and frame.time_delta < 0.1</div>
+                    
+                    <div class="feature-box">
+                        <h4>📈 Performance Insights</h4>
+                        <ul>
+                            <li>Token generation rate</li>
+                            <li>Service responsiveness</li>
+                            <li>Network congestion impact</li>
+                            <li>User experience quality</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-box">
+                        <h4>🔍 Quality Metrics</h4>
+                        <ul>
+                            <li>Inter-packet timing consistency</li>
+                            <li>Chunk size distribution</li>
+                            <li>Stream completion rates</li>
+                            <li>Error/retry patterns</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-highlight">
+                <h3>🎯 Demo Technique: Follow QUIC Stream</h3>
+                <p>Right-click packet → Follow → QUIC Stream to see complete conversation flow</p>
+            </div>
+        </div>
+
+        <!-- Slide 12: Anomaly Detection Framework -->
+        <div class="slide" data-notes="Anomaly detection is where network analysis becomes proactive security. We establish baselines for normal behavior, then identify deviations. This slide presents a systematic approach to anomaly detection. Emphasize that even small deviations can indicate significant issues - a 10x increase in request frequency might indicate abuse or compromise.">
+            <div class="slide-counter">12 / 16</div>
+            <h2>AI Traffic Anomaly Detection Framework</h2>
+            
+            <div class="two-column">
+                <div>
+                    <h3>Baseline Establishment</h3>
+                    <div class="feature-box">
+                        <h4>📊 Normal Patterns</h4>
+                        <ul>
+                            <li>Request frequency: 1-10/minute</li>
+                            <li>Response size: 1KB-50KB</li>
+                            <li>Session duration: 5-60 minutes</li>
+                            <li>Processing time: 1-30 seconds</li>
+                        </ul>
+                    </div>
+                    
+                    <h3>Statistical Thresholds</h3>
+                    <div class="code-block"># Anomaly Detection Rules
+REQUEST_SIZE_MAX = 50000
+RESPONSE_SIZE_MAX = 200000
+FREQUENCY_MAX = 60/minute
+SESSION_MAX = 7200 seconds
+
+# Statistical approach
+μ ± 3σ (3 standard deviations)</div>
+                </div>
+                
+                <div>
+                    <h3>Anomaly Categories</h3>
+                    <div class="pattern-card">
+                        <h4>🚨 Volume Anomalies</h4>
+                        <ul>
+                            <li>Unusually large requests (>100KB)</li>
+                            <li>Excessive response sizes (>500KB)</li>
+                            <li>High request frequency (>100/min)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="pattern-card">
+                        <h4>⏱️ Timing Anomalies</h4>
+                        <ul>
+                            <li>Rapid-fire requests (<1s intervals)</li>
+                            <li>Off-hours activity patterns</li>
+                            <li>Unusually long sessions (>4 hours)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="pattern-card">
+                        <h4>🔄 Behavioral Anomalies</h4>
+                        <ul>
+                            <li>No human "think time"</li>
+                            <li>Identical request patterns</li>
+                            <li>Geographic inconsistencies</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="code-block"># Wireshark Anomaly Filters
+quic and udp.length > 100000                          # Large transfers
+quic and frame.time_delta < 1 and udp.length > 500    # Rapid requests
+quic.connection.number and frame.time_relative > 3600  # Long sessions</div>
+        </div>
+
+        <!-- Slide 13: Security Monitoring -->
+        <div class="slide" data-notes="Security monitoring for AI services requires understanding both technical indicators and business context. API abuse might look like normal traffic from a protocol perspective but show anomalous patterns in frequency or content size. Emphasize the importance of correlation with application logs and business metrics.">
+            <div class="slide-counter">13 / 16</div>
+            <h2>AI Security Monitoring</h2>
+            
+            <div class="pattern-grid">
+                <div class="pattern-card">
+                    <h4>🔐 Authentication Issues</h4>
+                    <p><strong>Network Indicators:</strong></p>
+                    <ul>
+                        <li>Connection attempts without proper TLS</li>
+                        <li>Repeated connection failures</li>
+                        <li>Unusual certificate patterns</li>
+                        <li>Missing authentication headers</li>
+                    </ul>
+                </div>
+                
+                <div class="pattern-card">
+                    <h4>📤 Data Exfiltration</h4>
+                    <p><strong>Traffic Patterns:</strong></p>
+                    <ul>
+                        <li>Large sustained uploads</li>
+                        <li>Bulk download patterns</li>
+                        <li>Off-hours large transfers</li>
+                        <li>Unusual geographic sources</li>
+                    </ul>
+                </div>
+                
+                <div class="pattern-card">
+                    <h4>🤖 API Abuse</h4>
+                    <p><strong>Behavioral Indicators:</strong></p>
+                    <ul>
+                        <li>Automated request patterns</li>
+                        <li>Rate limit violations</li>
+                        <li>Unusual user agent strings</li>
+                        <li>Scripted interaction patterns</li>
+                    </ul>
+                </div>
+                
+                <div class="pattern-card">
+                    <h4>💉 Prompt Injection</h4>
+                    <p><strong>Traffic Characteristics:</strong></p>
+                    <ul>
+                        <li>Unusually large prompts</li>
+                        <li>Repeated similar requests</li>
+                        <li>Unusual encoding patterns</li>
+                        <li>Error response spikes</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="two-column" style="margin-top: 30px;">
+                <div>
+                    <h3>Real-Time Monitoring</h3>
+                    <div class="code-block"># Security Filters
+quic and udp.length > 50000        # Large transfers
+frame.time_delta < 0.5             # Rapid automation
+quic.frame_type == 0x1c            # Connection issues</div>
+                </div>
+                
+                <div>
+                    <h3>Integration Points</h3>
+                    <ul>
+                        <li><span class="highlight">SIEM Systems:</span> Export traffic data</li>
+                        <li><span class="highlight">API Gateways:</span> Correlate with app logs</li>
+                        <li><span class="highlight">Threat Intelligence:</span> IP reputation</li>
+                        <li><span class="highlight">Automated Response:</span> Dynamic blocking</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Performance Analysis -->
+        <div class="slide" data-notes="Performance analysis helps optimize AI service delivery and identify bottlenecks. Network-level metrics complement application metrics. Highlight how QUIC's advanced features like 0-RTT and connection migration improve AI service performance, especially for mobile users.">
+            <div class="slide-counter">14 / 16</div>
+            <h2>AI Service Performance Analysis</h2>
+            
+            <div class="two-column">
+                <div>
+                    <h3>Key Performance Metrics</h3>
+                    <div class="feature-box">
+                        <h4>🚀 Latency Metrics</h4>
+                        <ul>
+                            <li>Connection establishment time</li>
+                            <li>First byte time (TTFB)</li>
+                            <li>Response completion time</li>
+                            <li>Round-trip time distribution</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-box">
+                        <h4>📊 Throughput Analysis</h4>
+                        <ul>
+                            <li>Request/response sizes</li>
+                            <li>Concurrent connection count</li>
+                            <li>Stream multiplexing efficiency</li>
+                            <li>Bandwidth utilization</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>QUIC Performance Benefits</h3>
+                    <div class="code-block"># Performance Analysis
+tcp.analysis.ack_rtt           # TCP RTT
+quic and frame.time_delta      # QUIC timing
+udp.length                     # Payload efficiency
+quic.frame_type == 0x04        # Flow control</div>
+                    
+                    <div class="feature-box">
+                        <h4>📈 Optimization Opportunities</h4>
+                        <ul>
+                            <li>0-RTT connection usage rates</li>
+                            <li>Connection migration success</li>
+                            <li>Congestion control effectiveness</li>
+                            <li>Stream prioritization impact</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-box">
+                        <h4>🎯 SLA Monitoring</h4>
+                        <ul>
+                            <li>Response time percentiles</li>
+                            <li>Availability tracking</li>
+                            <li>Error rate monitoring</li>
+                            <li>Capacity planning metrics</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-highlight">
+                <h3>📊 Wireshark Statistics Tools</h3>
+                <p><strong>Statistics → Service Response Time:</strong> Latency analysis<br>
+                <strong>Statistics → I/O Graphs:</strong> Throughput visualization<br>
+                <strong>Statistics → Conversations:</strong> Connection analysis</p>
+            </div>
+        </div>
+
+        <!-- Slide 15: Implementation Roadmap -->
+        <div class="slide" data-notes="This slide provides practical guidance for implementing AI traffic monitoring in production. Start with basic monitoring, establish baselines, then gradually add more sophisticated analysis. Emphasize the importance of cross-functional collaboration between network, security, and application teams.">
+            <div class="slide-counter">15 / 16</div>
+            <h2>Implementation Roadmap</h2>
+            
+            <div class="two-column">
+                <div>
+                    <h3>Phase 1: Foundation (Week 1-2)</h3>
+                    <ul>
+                        <li>✅ Deploy Wireshark on key network points</li>
+                        <li>✅ Identify AI service endpoints</li>
+                        <li>✅ Create basic QUIC capture filters</li>
+                        <li>✅ Establish baseline traffic patterns</li>
+                    </ul>
+                    
+                    <h3>Phase 2: Monitoring (Week 3-4)</h3>
+                    <ul>
+                        <li>🔧 Configure automated capture</li>
+                        <li>🔧 Set up statistical analysis</li>
+                        <li>🔧 Define anomaly thresholds</li>
+                        <li>🔧 Create alerting mechanisms</li>
+                    </ul>
+                    
+                    <h3>Phase 3: Integration (Week 5-6)</h3>
+                    <ul>
+                        <li>🚀 SIEM system integration</li>
+                        <li>🚀 API gateway correlation</li>
+                        <li>🚀 Automated response systems</li>
+                        <li>🚀 Performance dashboard creation</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3>Tools & Technologies</h3>
+                    <div class="feature-box">
+                        <h4>🔍 Capture & Analysis</h4>
+                        <ul>
+                            <li>Wireshark (GUI analysis)</li>
+                            <li>tshark (CLI automation)</li>
+                            <li>Suricata (IDS integration)</li>
+                            <li>ntopng (real-time monitoring)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-box">
+                        <h4>📊 Data Processing</h4>
+                        <ul>
+                            <li>ELK Stack (log analysis)</li>
+                            <li>Splunk (enterprise SIEM)</li>
+                            <li>Grafana (visualization)</li>
+                            <li>Python/pandas (custom analysis)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-box">
+                        <h4>🔐 Security Integration</h4>
+                        <ul>
+                            <li>Security orchestration platforms</li>
+                            <li>Threat intelligence feeds</li>
+                            <li>API security gateways</li>
+                            <li>Automated blocking systems</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-highlight">
+                <h3>🎯 Success Metrics</h3>
+                <p><strong>Detection Rate:</strong> >95% anomaly identification | <strong>False Positives:</strong> <5% | <strong>Response Time:</strong> <60 seconds</p>
+            </div>
+        </div>
+
+        <!-- Slide 16: Q&A -->
+        <div class="slide" data-notes="This concludes our presentation. Encourage questions about implementation challenges, tool selection, integration with existing security infrastructure, and specific use cases. Be prepared to discuss scaling considerations, privacy implications, and emerging AI traffic patterns.">
+            <div class="slide-counter">16 / 16</div>
+            <div class="demo-highlight" style="text-align: center; padding: 100px;">
+                <h1 style="font-size: 4rem; margin-bottom: 40px;">❓ Q&A SESSION</h1>
+                <h2>Questions & Discussion</h2>
+                
+                <div style="margin: 60px 0;">
+                    <div class="two-column">
+                        <div class="feature-box">
+                            <h4>🛠️ Implementation</h4>
+                            <ul>
+                                <li>Tool selection and setup</li>
+                                <li>Integration challenges</li>
+                                <li>Scaling considerations</li>
+                                <li>Resource requirements</li>
+                            </ul>
+                        </div>
+                        <div class="feature-box">
+                            <h4>🔐 Security</h4>
+                            <ul>
+                                <li>Privacy implications</li>
+                                <li>Compliance requirements</li>
+                                <li>Threat modeling</li>
+                                <li>Incident response</li>
+                            </ul>
+                        </div>
+                        <div class="feature-box">
+                            <h4>📈 Advanced Topics</h4>
+                            <ul>
+                                <li>Machine learning integration</li>
+                                <li>Emerging AI protocols</li>
+                                <li>Cloud-native considerations</li>
+                                <li>Future developments</li>
+                            </ul>
+                        </div>
+                        <div class="feature-box">
+                            <h4>🎯 Use Cases</h4>
+                            <ul>
+                                <li>Research environment monitoring</li>
+                                <li>Student activity analysis</li>
+                                <li>Infrastructure optimization</li>
+                                <li>Policy enforcement</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 60px;">
+                    <h3 style="color: #666;">Thank you for your attention!</h3>
+                    <p style="font-size: 1.2rem; color: #888;">Contact: [Your contact information]</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation">
+        <button class="nav-btn" onclick="previousSlide()">← Previous</button>
+        <button class="nav-btn" onclick="nextSlide()">Next →</button>
+    </div>
+
+    <!-- Speaker Notes -->
+    <div class="speaker-notes" id="speakerNotes">
+        <h3>Speaker Notes:</h3>
+        <div id="notesContent">
+            Welcome everyone. Today we're diving into network analysis with a focus on modern AI services. This is particularly relevant as AI becomes ubiquitous in our infrastructure. We'll start with Wireshark fundamentals, explore classic use cases, then dive deep into AI traffic patterns using QUIC protocol. The presentation is designed for 20+ minutes with interactive demo portions.
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            updateSpeakerNotes();
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function previousSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        function updateSpeakerNotes() {
+            const currentSlideElement = slides[currentSlide];
+            const notes = currentSlideElement.getAttribute('data-notes');
+            document.getElementById('notesContent').textContent = notes || 'No speaker notes for this slide.';
+        }
+
+        function toggleNotes() {
+            const notesPanel = document.getElementById('speakerNotes');
+            notesPanel.classList.toggle('show');
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                previousSlide();
+            } else if (e.key === 'n' || e.key === 'N') {
+                toggleNotes();
+            }
+        });
+
+        // Initialize
+        updateSpeakerNotes();
+    </script>
+</body>
+</html>

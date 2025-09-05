@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Tools in AI Ecosystem</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #333;
+            /* overflow: hidden; -- Removed to allow scrolling on long slides */
+        }
+
+        .presentation-container {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 50px;
+            max-width: 1200px;
+            width: 90%;
+            min-height: 700px;
+            display: none;
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+            overflow-y: auto;
+            max-height: 90vh; /* Allow slide to scroll if content is too long */
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide h1 {
+            font-size: 2.8rem;
+            color: #1a365d;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .slide h2 {
+            font-size: 2.2rem;
+            color: #2d3748;
+            margin-bottom: 25px;
+            border-bottom: 3px solid #4299e1;
+            padding-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .slide h3 {
+            font-size: 1.6rem;
+            color: #2b6cb0;
+            margin: 20px 0 15px 0;
+            font-weight: 500;
+        }
+
+        .slide h4 {
+            font-size: 1.3rem;
+            color: #2d3748;
+            margin: 15px 0 10px 0;
+            font-weight: 600;
+        }
+
+        .slide p, .slide li {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            color: #555;
+        }
+
+        .slide ul {
+            margin-left: 25px;
+            margin-bottom: 20px;
+        }
+
+        .slide li {
+            margin-bottom: 8px;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 25px 0;
+        }
+
+        .three-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            margin: 25px 0;
+        }
+
+        .tool-card {
+            background: linear-gradient(145deg, #f7fafc, #edf2f7);
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        }
+
+        .tool-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4299e1, #38b2ac);
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .tool-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(66, 153, 225, 0.3);
+        }
+
+        .highlight-box h3 {
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .ai-ecosystem-diagram {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .ecosystem-layer {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            display: inline-block;
+            min-width: 200px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .security-tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .threat-category {
+            background: linear-gradient(145deg, #fff5f5, #fed7d7);
+            border-left: 5px solid #e53e3e;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .threat-category h4 {
+            color: #c53030;
+            margin-bottom: 10px;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: linear-gradient(145deg, #4299e1, #3182ce);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(66, 153, 225, 0.4);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .slide-counter {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: rgba(52, 73, 94, 0.8);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1.3rem;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        .feature-list {
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .feature-list h4 {
+            color: #2980b9;
+            margin-bottom: 15px;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+
+            max-height: 2.7rem; 
+            overflow: hidden; /* Hide the overflowing content */
+            transition: max-height 0.5s ease-in-out; /* Smooth transition for expansion */
+        }
+
+        /* When the user hovers over the block, expand it */
+        .code-block:hover {
+            max-height: 500px; /* Set a large max-height to reveal all content */
+        }
+
+        /* Add a fade-out effect to indicate more content */
+        .code-block::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1.5rem; /* Height of the fade */
+            background: linear-gradient(to bottom, transparent, #2d3748);
+            pointer-events: none; /* Allows clicks to pass through */
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        /* Hide the fade-out effect when expanded */
+        .code-block:hover::after {
+            opacity: 0;
+        }
+        
+
+        .integration-flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 25px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            color: white;
+        }
+
+        .flow-item {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            flex: 1;
+            margin: 0 10px;
+        }
+
+        .arrow {
+            font-size: 2rem;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px;
+                min-height: 600px;
+            }
+            
+            .slide h1 {
+                font-size: 2.2rem;
+            }
+            
+            .slide h2 {
+                font-size: 1.8rem;
+            }
+            
+            .two-column, .three-column {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .integration-flow {
+                flex-direction: column;
+            }
+
+            .arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        
+        <div class="slide active">
+            <div class="slide-counter">1 / 15</div>
+            <h1>Security Tools in the AI Ecosystem</h1>
+            <div class="subtitle">Network Monitoring & Threat Detection for AI Applications</div>
+            
+            <div class="highlight-box" style="margin-top: 50px;">
+                <h3>Comprehensive Security Architecture</h3>
+                <p>Wireshark • Suricata • Snort • ELK Stack</p>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px;">
+                <div style="display: inline-block; margin: 0 30px;">
+                    <h4>🛡️ Network Security</h4>
+                    <p>Traffic Analysis & Intrusion Detection</p>
+                </div>
+                <div style="display: inline-block; margin: 0 30px;">
+                    <h4>🤖 AI Protection</h4>
+                    <p>Model Security & Data Privacy</p>
+                </div>
+                <div style="display: inline-block; margin: 0 30px;">
+                    <h4>📊 Monitoring</h4>
+                    <p>Logging & Analytics Platform</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-counter">2 / 15</div>
+            <h2>The AI Security Challenge</h2>
+            
+            <div class="ai-ecosystem-diagram">
+                <h3>Modern AI Application Architecture</h3>
+                <div style="margin: 30px 0;">
+                    <div class="ecosystem-layer">
+                        <h4>🌐 User Interface</h4>
+                        <p>Web Apps, Mobile, APIs</p>
+                    </div>
+                    <div style="margin: 0 20px; display: inline-block;">⬇️</div>
+                    <div class="ecosystem-layer">
+                        <h4>🔀 API Gateway</h4>
+                        <p>Authentication, Rate Limiting</p>
+                    </div>
+                    <div style="margin: 0 20px; display: inline-block;">⬇️</div>
+                    <div class="ecosystem-layer">
+                        <h4>🧠 AI Services</h4>
+                        <p>Model Inference, Training</p>
+                    </div>
+                    <div style="margin: 0 20px; display: inline-block;">⬇️</div>
+                    <div class="ecosystem-layer">
+                        <h4>💾 Data Layer</h4>
+                        <p>Vector DBs, Training Data</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="two-column">
+                <div>
+                    <h3>AI-Specific Threats</h3>
+                    <ul>
+                        <li><strong>Model Theft:</strong> Unauthorized model extraction</li>
+                        <li><strong>Data Poisoning:</strong> Malicious training data</li>
+                        <li><strong>Prompt Injection:</strong> Adversarial inputs</li>
+                        <li><strong>Privacy Leakage:</strong> Training data exposure</li>
+                        <li><strong>API Abuse:</strong> Excessive resource consumption</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Traditional Security Still Applies</h3>
+                    <ul>
+                        <li><strong>Network Attacks:</strong> DDoS, MITM</li>
+                        <li><strong>Application Vulnerabilities:</strong> Injection, XSS</li>
+                        <li><strong>Infrastructure Security:</strong> Container, cloud</li>
+                        <li><strong>Access Control:</strong> Authentication, authorization</li>
+                        <li><strong>Data Protection:</strong> Encryption, compliance</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-counter">3 / 15</div>
+            <h2>Security Tools Ecosystem</h2>
+            
+            <div class="integration-flow">
+                <div class="flow-item">
+                    <h4>📡 Network Layer</h4>
+                    <p>Wireshark<br>Suricata<br>Snort</p>
+                </div>
+                <div class="arrow">→</div>
+                <div class="flow-item">
+                    <h4>🔍 Detection</h4>
+                    <p>Pattern Matching<br>Anomaly Detection<br>Behavioral Analysis</p>
+                </div>
+                <div class="arrow">→</div>
+                <div class="flow-item">
+                    <h4>📊 Analytics</h4>
+                    <p>ELK Stack<br>Log Analysis<br>Visualization</p>
+                </div>
+                <div class="arrow">→</div>
+                <div class="flow-item">
+                    <h4>🚨 Response</h4>
+                    <p>Alerting<br>Blocking<br>Mitigation</p>
+                </div>
+            </div>
+
+            <div class="security-tools-grid">
+                <div class="tool-card">
+                    <h4>🔍 Wireshark</h4>
+                    <p><strong>Network Protocol Analyzer</strong></p>
+                    <ul>
+                        <li>Deep packet inspection</li>
+                        <li>Real-time traffic analysis</li>
+                        <li>AI traffic pattern recognition</li>
+                    </ul>
+                </div>
+                
+                <div class="tool-card">
+                    <h4>🛡️ Suricata</h4>
+                    <p><strong>Network Security Platform</strong></p>
+                    <ul>
+                        <li>Multi-threaded IDS/IPS</li>
+                        <li>Advanced threat detection</li>
+                        <li>AI-powered rule engine</li>
+                    </ul>
+                </div>
+                
+                <div class="tool-card">
+                    <h4>⚔️ Snort</h4>
+                    <p><strong>Intrusion Detection System</strong></p>
+                    <ul>
+                        <li>Real-time traffic analysis</li>
+                        <li>Rule-based detection</li>
+                        <li>Lightweight deployment</li>
+                    </ul>
+                </div>
+                
+                <div class="tool-card">
+                    <h4>📈 ELK Stack</h4>
+                    <p><strong>Search & Analytics Platform</strong></p>
+                    <ul>
+                        <li>Log aggregation & analysis</li>
+                        <li>Security event correlation</li>
+                        <li>Real-time dashboards</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-counter">4 / 15</div>
+            <h2>Security Tools Comparison</h2>
+            
+            <div class="highlight-box">
+                <h3>Choosing the Right Tool for Your AI Environment</h3>
+                <p>Understanding capabilities, performance, and use cases</p>
+            </div>
+
+            <div style="background: #f7fafc; padding: 25px; border-radius: 12px; margin: 25px 0;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 1rem;">
+                    <thead>
+                        <tr style="background: linear-gradient(135deg, #4299e1, #3182ce); color: white;">
+                            <th style="padding: 15px; text-align: left; border: none;">Feature</th>
+                            <th style="padding: 15px; text-align: center; border: none;">Wireshark</th>
+                            <th style="padding: 15px; text-align: center; border: none;">Suricata</th>
+                            <th style="padding: 15px; text-align: center; border: none;">Snort</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background: white;">
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: 600;">Primary Function</td>
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; text-align: center;">Traffic Analysis</td>
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; text-align: center;">IDS/IPS</td>
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; text-align: center;">IDS</td>
+                        </tr>
+                        <tr style="background: #f7fafc;">
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: 600;">Performance</td>
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; text-align: center;">Manual Analysis</td>
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; text-align: center;">High Throughput</td>
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; text-align: center;">Moderate</td>
+                        </tr>
+                        <tr style="background: white;">
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: 600;">Threading</td>
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; text-align: center;">Single</td>
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; text-align: center;">Multi-threaded</td>
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; text-align: center;">Single</td>
+                        </tr>
+                        <tr style="background: #f7fafc;">
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: 600;">Real-time Detection</td>
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; text-align: center;">❌</td>
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; text-align: center;">✅</td>
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; text-align: center;">✅</td>
+                        </tr>
+                        <tr style="background: white;">
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: 600;">AI Features</td>
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; text-align: center;">Pattern Analysis</td>
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; text-align: center;">ML Detection</td>
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; text-align: center;">Basic Rules</td>
+                        </tr>
+                        <tr style="background: #f7fafc;">
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: 600;">Best For AI</td>
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; text-align: center;">Traffic Analysis</td>
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; text-align: center;">Production Security</td>
+                            <td style="padding: 12px; border: 1px solid #e2e8f0; text-align: center;">Small Deployments</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="highlight-box">
+                <h3>🎯 Recommendation for AI Environments</h3>
+                <p><strong>Suricata</strong> for high-traffic production AI systems<br>
+                <strong>Wireshark</strong> for deep analysis and troubleshooting</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-counter">5 / 15</div>
+            <h2>Wireshark: Network Protocol Analyzer</h2>
+            
+            <div class="highlight-box">
+                <h3>The Gold Standard for Network Analysis</h3>
+                <p>Deep packet inspection and protocol dissection for AI traffic understanding</p>
+            </div>
+
+            <div class="two-column">
+                <div>
+                    <h3>Core Capabilities</h3>
+                    <div class="feature-list">
+                        <h4>🔍 Protocol Analysis</h4>
+                        <ul>
+                            <li>3000+ protocol dissectors</li>
+                            <li>Layer 2-7 inspection</li>
+                            <li>Real-time capture and offline analysis</li>
+                            <li>Advanced filtering capabilities</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-list">
+                        <h4>📊 Traffic Statistics</h4>
+                        <ul>
+                            <li>I/O graphs and flow analysis</li>
+                            <li>Conversation tracking</li>
+                            <li>Protocol hierarchy statistics</li>
+                            <li>Expert analysis and warnings</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>AI-Specific Applications</h3>
+                    <div class="tool-card">
+                        <h4>🤖 AI Traffic Patterns</h4>
+                        <ul>
+                            <li>HTTP/HTTPS API analysis</li>
+                            <li>QUIC protocol for modern AI services</li>
+                            <li>WebSocket streaming detection</li>
+                            <li>gRPC microservice communication</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h4>🔐 Security Analysis</h4>
+                        <ul>
+                            <li>Anomalous payload size detection</li>
+                            <li>Unusual connection patterns</li>
+                            <li>Certificate and encryption analysis</li>
+                            <li>Data exfiltration identification</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-block">
+# Essential Wireshark Filters for AI
+# Monitor AI API traffic
+http.request.uri contains "/api/" and http.request.method == "POST"
+
+# Large response detection
+http.content_length > 50000
+
+# QUIC traffic for modern AI services
+quic and udp.length > 1000
+
+# Streaming response patterns
+quic and frame.time_delta < 0.2
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-counter">6 / 15</div>
+            <h2>AI Traffic Patterns in Wireshark</h2>
+            
+            <div class="three-column">
+                <div class="tool-card">
+                    <h4>💬 Chat Conversations</h4>
+                    <p><strong>Pattern Characteristics:</strong></p>
+                    <ul>
+                        <li>Small requests (500-3KB)</li>
+                        <li>Large responses (3-50KB)</li>
+                        <li>Human timing patterns</li>
+                        <li>Asymmetric traffic</li>
+                    </ul>
+                </div>
+                
+                <div class="tool-card">
+                    <h4>💻 Code Generation</h4>
+                    <p><strong>Pattern Characteristics:</strong></p>
+                    <ul>
+                        <li>Medium requests (1-8KB)</li>
+                        <li>Very large responses (10-100KB)</li>
+                        <li>Longer processing times</li>
+                        <li>Follow-up iterations</li>
+                    </ul>
+                </div>
+                
+                <div class="tool-card">
+                    <h4>🔄 Streaming Responses</h4>
+                    <p><strong>Pattern Characteristics:</strong></p>
+                    <ul>
+                        <li>Initial request</li>
+                        <li>Multiple small chunks</li>
+                        <li>Consistent timing intervals</li>
+                        <li>Real-time delivery</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="code-block">
+# Key Wireshark Filters for AI Analysis
+
+# Basic AI traffic identification
+quic and udp.length > 1000
+
+# Large responses (potential model outputs)
+quic and ip.src == [AI_IP] and udp.length > 20000
+
+# Streaming patterns
+quic and frame.time_delta < 0.2 and udp.length < 1000
+
+# API abuse detection
+frame.time_delta < 1 and udp.length > 500
+            </div>
+
+            <div class="highlight-box">
+                <h3>Real-World Example: ChatGPT Traffic Analysis</h3>
+                <p>Request: 800 bytes → Response: 15,000 bytes in 2.3 seconds<br>
+                Protocol: QUIC over UDP, encrypted but metadata reveals usage patterns</p>
+            </div>
+             
+
+        </div>
+
+        <div class="slide">
+            <div class="slide-counter">7 / 15</div>
+            <h2>Suricata: Network Security Engine</h2>
+            
+            <div class="highlight-box">
+                <h3>High-Performance Intrusion Detection & Prevention</h3>
+                <p>Multi-threaded security platform with advanced threat detection capabilities</p>
+            </div>
+
+            <div class="two-column">
+                <div>
+                    <h3>Architecture Advantages</h3>
+                    <div class="feature-list">
+                        <h4>🚀 Performance Features</h4>
+                        <ul>
+                            <li>Multi-threaded packet processing</li>
+                            <li>Hardware acceleration support</li>
+                            <li>Optimized for high-speed networks</li>
+                            <li>Low latency real-time detection</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-list">
+                        <h4>🔧 Detection Methods</h4>
+                        <ul>
+                            <li>Signature-based detection</li>
+                            <li>Protocol anomaly detection</li>
+                            <li>File extraction and analysis</li>
+                            <li>TLS/SSL certificate monitoring</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>AI Security Features</h3>
+                    <div class="tool-card">
+                        <h4>🧠 Machine Learning Integration</h4>
+                        <ul>
+                            <li>Behavioral anomaly detection</li>
+                            <li>Traffic pattern classification</li>
+                            <li>Adaptive rule generation</li>
+                            <li>False positive reduction</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h4>🎯 API Protection</h4>
+                        <ul>
+                            <li>Rate limiting enforcement</li>
+                            <li>Authentication bypass detection</li>
+                            <li>JSON payload inspection</li>
+                            <li>API endpoint monitoring</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-block">
+# Sample Suricata Rules for AI Security
+
+# Detect large AI model responses
+alert http any any -> any any (
+  msg:"Large AI Response"; content:"application/json";
+  http_content_type; dsize:>100000; sid:1001;
+)
+
+# API rate limiting bypass
+alert http any any -> any any (
+  msg:"High Frequency API Calls"; flow:to_server;
+  content:"/api/chat"; http_uri; threshold: type both,
+  track by_src, count 50, seconds 60; sid:1002;
+)
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-counter">8 / 15</div>
+            <h2>Suricata Rules for AI Application Security</h2>
+            
+            <div class="code-block">
+# Sample AI Security Rules
+
+# Detect large AI model responses
+alert http any any -> any any (
+  msg:"Large AI Response Detected"; 
+  content:"application/json"; http_content_type; 
+  dsize:>50000; sid:1001;
+)
+
+# API rate limiting bypass attempts
+alert http any any -> any any (
+  msg:"High Frequency API Calls"; flow:to_server; 
+  content:"/api/v1/chat"; http_uri; 
+  threshold: type both, track by_src, count 100, seconds 60; 
+  sid:1002;
+)
+
+# Prompt injection attempts
+alert http any any -> any any (
+  msg:"Potential Prompt Injection"; 
+  content:"ignore previous instructions"; 
+  http_client_body; nocase; sid:1003;
+)
+
+# Unauthorized model access
+alert http any any -> any any (
+  msg:"Unauthorized Model Endpoint"; 
+  content:"/models/"; http_uri; 
+  content:!"Authorization:"; http_header; sid:1004;
+)
+            </div>
+
+            <div class="two-column">
+                <div>
+                    <h3>Detection Categories</h3>
+                    <div class="tool-card">
+                        <h4>🔐 Authentication Attacks</h4>
+                        <ul>
+                            <li>API key brute forcing</li>
+                            <li>Token replay attacks</li>
+                            <li>Session hijacking</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h4>💉 Injection Attacks</h4>
+                        <ul>
+                            <li>Prompt injection patterns</li>
+                            <li>SQL injection in prompts</li>
+                            <li>Command injection attempts</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>Automated Responses</h3>
+                    <div class="tool-card">
+                        <h4>🚫 Blocking Actions</h4>
+                        <ul>
+                            <li>IP-based blocking</li>
+                            <li>Rate limiting enforcement</li>
+                            <li>Connection dropping</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h4>📊 Logging & Alerting</h4>
+                        <ul>
+                            <li>Real-time SIEM integration</li>
+                            <li>Detailed event logging</li>
+                            <li>Threat intelligence feeds</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-counter">9 / 15</div>
+            <h2>Snort: Lightweight Intrusion Detection</h2>
+            
+            <div class="highlight-box">
+                <h3>Simple, Effective Network Security</h3>
+                <p>Proven IDS solution with straightforward deployment and configuration</p>
+            </div>
+
+            <div class="two-column">
+                <div>
+                    <h3>Core Architecture</h3>
+                    <div class="feature-list">
+                        <h4>🏃 Lightweight Design</h4>
+                        <ul>
+                            <li>Single-threaded processing</li>
+                            <li>Minimal resource requirements</li>
+                            <li>Fast deployment and setup</li>
+                            <li>Well-documented configuration</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-list">
+                        <h4>🔧 Detection Capabilities</h4>
+                        <ul>
+                            <li>Signature-based detection</li>
+                            <li>Protocol analysis and validation</li>
+                            <li>Content pattern matching</li>
+                            <li>Anomaly detection rules</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>AI Environment Applications</h3>
+                    <div class="tool-card">
+                        <h4>🎯 Ideal Use Cases</h4>
+                        <ul>
+                            <li>Small to medium AI deployments</li>
+                            <li>Research and development environments</li>
+                            <li>Educational institutions</li>
+                            <li>Budget-constrained projects</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h4>🔐 Security Features</h4>
+                        <ul>
+                            <li>Basic API abuse detection</li>
+                            <li>Simple rate limiting alerts</li>
+                            <li>Malformed request identification</li>
+                            <li>Brute force attack detection</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-block">
+# Basic Snort Rules for AI Protection
+
+# Detect unauthorized API access
+alert tcp any any -> any 443 (
+  msg:"Unauthorized AI API Access";
+  content:"POST /api/"; http_uri;
+  content:!"Authorization:"; http_header;
+  sid:2001;
+)
+
+# Monitor large uploads to AI services
+alert tcp any any -> any 443 (
+  msg:"Large Upload to AI Service";
+  content:"Content-Length:"; http_header;
+  content:"|20|[5-9][0-9][0-9][0-9][0-9]"; http_header;
+  sid:2002;
+)
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-counter">10 / 15</div>
+            <h2>ELK Stack: Security Analytics Platform</h2>
+            
+            <div class="highlight-box">
+                <h3>Elasticsearch + Logstash + Kibana = Comprehensive Security Analytics</h3>
+                <p>Centralized logging, real-time analysis, and visualization for AI security</p>
+            </div>
+
+            <div class="three-column">
+                <div class="tool-card">
+                    <h4>🔍 Elasticsearch</h4>
+                    <p><strong>Search & Analytics Engine</strong></p>
+                    <ul>
+                        <li>Distributed search engine</li>
+                        <li>Real-time indexing</li>
+                        <li>Complex query capabilities</li>
+                        <li>Horizontal scaling</li>
+                    </ul>
+                </div>
+                
+                <div class="tool-card">
+                    <h4>🔄 Logstash</h4>
+                    <p><strong>Data Processing Pipeline</strong></p>
+                    <ul>
+                        <li>Log ingestion & parsing</li>
+                        <li>Data transformation</li>
+                        <li>Multiple input sources</li>
+                        <li>Real-time processing</li>
+                    </ul>
+                </div>
+                
+                <div class="tool-card">
+                    <h4>📊 Kibana</h4>
+                    <p><strong>Visualization & Dashboards</strong></p>
+                    <ul>
+                        <li>Interactive dashboards</li>
+                        <li>Real-time monitoring</li>
+                        <li>Custom visualizations</li>
+                        <li>Alerting system</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="two-column">
+                <div>
+                    <h3>AI Security Log Sources</h3>
+                    <div class="feature-list">
+                        <h4>📡 Network Security Tools</h4>
+                        <ul>
+                            <li>Suricata/Snort alerts</li>
+                            <li>Wireshark packet captures</li>
+                            <li>Firewall logs</li>
+                            <li>Network flow data</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-list">
+                        <h4>🔗 Application Logs</h4>
+                        <ul>
+                            <li>API gateway logs</li>
+                            <li>AI model inference logs</li>
+                            <li>Authentication events</li>
+                            <li>Error and exception logs</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>Security Analytics Use Cases</h3>
+                    <div class="threat-category">
+                        <h4>🔍 Threat Hunting</h4>
+                        <ul>
+                            <li>Correlate events across systems</li>
+                            <li>Identify attack patterns</li>
+                            <li>Timeline reconstruction</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="threat-category">
+                        <h4>📈 Performance Monitoring</h4>
+                        <ul>
+                            <li>API response times</li>
+                            <li>Model inference latency</li>
+                            <li>Resource utilization</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-counter">11 / 15</div>
+            <h2>ELK Stack for AI Security Analytics</h2>
+            
+            <div class="code-block">
+# Sample Logstash Configuration for AI Logs
+input {
+  beats { port => 5044 }
+  syslog { port => 5000 }
+}
+
+filter {
+  if [fields][log_type] == "suricata" {
+    json { source => "message" }
+    if [event_type] == "alert" {
+      mutate { add_tag => ["security_alert"] }
+    }
+  }
+  if [fields][log_type] == "ai_api" {
+    grok {
+      match => { "message" => "%{TIMESTAMP_ISO8601:timestamp} %{LOGLEVEL:level} %{DATA:endpoint} %{NUMBER:response_time:float} %{NUMBER:response_size:int}" }
+    }
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["localhost:9200"]
+    index => "ai-security-%{+YYYY.MM.dd}"
+  }
+}
+            </div>
+
+            <div class="two-column">
+                <div>
+                    <h3>Key Kibana Dashboards</h3>
+                    <div class="tool-card">
+                        <h4>🛡️ Security Overview</h4>
+                        <ul>
+                            <li>Real-time threat detection</li>
+                            <li>Attack timeline visualization</li>
+                            <li>Geographic threat mapping</li>
+                            <li>Top attackers and targets</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h4>🤖 AI Application Metrics</h4>
+                        <ul>
+                            <li>API usage patterns</li>
+                            <li>Model performance metrics</li>
+                            <li>Error rate monitoring</li>
+                            <li>User behavior analysis</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>Advanced Analytics</h3>
+                    <div class="tool-card">
+                        <h4>📊 Machine Learning Jobs</h4>
+                        <ul>
+                            <li>Anomaly detection on API usage</li>
+                            <li>Behavioral baseline creation</li>
+                            <li>Outlier identification</li>
+                            <li>Predictive alerting</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h4>🔗 Cross-system Correlation</h4>
+                        <ul>
+                            <li>Network + application events</li>
+                            <li>Multi-stage attack detection</li>
+                            <li>Impact assessment</li>
+                            <li>Root cause analysis</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-counter">12 / 15</div>
+            <h2>Implementation Strategy for Educational Institutions</h2>
+            
+            <div class="two-column">
+                <div>
+                    <h3>Phase 1: Foundation (Weeks 1-2)</h3>
+                    <div class="feature-list">
+                        <h4>🚀 Initial Setup</h4>
+                        <ul>
+                            <li>Deploy ELK Stack infrastructure</li>
+                            <li>Install Wireshark on key network points</li>
+                            <li>Configure Suricata for production environments</li>
+                            <li>Set up Snort for smaller deployments</li>
+                        </ul>
+                    </div>
+                    
+                    <h3>Phase 2: Configuration (Weeks 3-4)</h3>
+                    <div class="feature-list">
+                        <h4>🔧 Customization</h4>
+                        <ul>
+                            <li>Create AI-specific detection rules</li>
+                            <li>Configure log processing pipelines</li>
+                            <li>Build monitoring dashboards</li>
+                            <li>Establish baseline traffic patterns</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>Phase 3: Optimization (Weeks 5-6)</h3>
+                    <div class="feature-list">
+                        <h4>🎯 Fine-tuning</h4>
+                        <ul>
+                            <li>Reduce false positives</li>
+                            <li>Implement automated responses</li>
+                            <li>Deploy advanced analytics</li>
+                            <li>Integrate with existing SOC</li>
+                        </ul>
+                    </div>
+                    
+                    <h3>Educational Benefits</h3>
+                    <div class="tool-card">
+                        <h4>🎓 Learning Opportunities</h4>
+                        <ul>
+                            <li>Hands-on cybersecurity training</li>
+                            <li>Real-world AI threat analysis</li>
+                            <li>Network forensics skills</li>
+                            <li>Research project foundations</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>💡 Best Practices for Academic Environments</h3>
+                <p>Start small with controlled lab environments • Focus on learning outcomes • 
+                Ensure compliance with institutional policies • Document everything for reproducibility</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-counter">13 / 15</div>
+            <h2>Real-World Use Cases</h2>
+            
+            <div class="two-column">
+                <div>
+                    <h3>Case Study 1: University AI Research Lab</h3>
+                    <div class="tool-card">
+                        <h4>🎯 Challenge</h4>
+                        <p>Monitor student and researcher usage of AI services, detect unauthorized data sharing, ensure compliance with research ethics.</p>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h4>🛠️ Solution</h4>
+                        <ul>
+                            <li><strong>Wireshark:</strong> Analyze AI API traffic patterns</li>
+                            <li><strong>Suricata:</strong> Detect large data uploads</li>
+                            <li><strong>ELK:</strong> Create compliance dashboards</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h4>📊 Results</h4>
+                        <ul>
+                            <li>95% reduction in policy violations</li>
+                            <li>Automated compliance reporting</li>
+                            <li>Enhanced research data protection</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>Case Study 2: Corporate AI Development</h3>
+                    <div class="tool-card">
+                        <h4>🎯 Challenge</h4>
+                        <p>Protect proprietary AI models from theft, monitor API abuse, detect prompt injection attacks.</p>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h4>🛠️ Solution</h4>
+                        <ul>
+                            <li><strong>Suricata:</strong> Real-time threat detection</li>
+                            <li><strong>Wireshark:</strong> Deep packet forensics</li>
+                            <li><strong>ELK:</strong> Security event correlation</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h4>📊 Results</h4>
+                        <ul>
+                            <li>99.7% uptime for AI services</li>
+                            <li>Zero successful model theft attempts</li>
+                            <li>60% faster incident response</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="threat-category" style="margin-top: 30px;">
+                <h4>💡 Key Lessons Learned</h4>
+                <ul>
+                    <li><strong>Layered Defense:</strong> No single tool provides complete protection</li>
+                    <li><strong>Baseline Important:</strong> Understanding normal AI traffic is crucial</li>
+                    <li><strong>Automation Essential:</strong> Manual monitoring doesn't scale</li>
+                    <li><strong>Training Critical:</strong> Staff must understand AI-specific threats</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-counter">14 / 15</div>
+            <h2>Compliance and Auditing</h2>
+            
+            <div class="highlight-box">
+                <h3>Meeting Regulatory Requirements for AI Systems</h3>
+                <p>GDPR • HIPAA • SOX • EU AI Act • Institutional Policies</p>
+            </div>
+
+            <div class="two-column">
+                <div>
+                    <h3>Compliance Requirements</h3>
+                    <div class="feature-list">
+                        <h4>📋 Data Protection (GDPR)</h4>
+                        <ul>
+                            <li>Monitor data processing activities</li>
+                            <li>Track data subject requests</li>
+                            <li>Audit AI decision-making processes</li>
+                            <li>Ensure data minimization compliance</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-list">
+                        <h4>🏥 Healthcare (HIPAA)</h4>
+                        <ul>
+                            <li>Medical AI application monitoring</li>
+                            <li>PHI access logging and auditing</li>
+                            <li>Unauthorized access detection</li>
+                            <li>Breach notification compliance</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-list">
+                        <h4>🤖 AI Governance (EU AI Act)</h4>
+                        <ul>
+                            <li>High-risk AI system monitoring</li>
+                            <li>Transparency and explainability</li>
+                            <li>Bias detection and mitigation</li>
+                            <li>Performance monitoring</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>Audit Trail Generation</h3>
+                    <div class="tool-card">
+                        <h4>🔍 Network-Level Auditing</h4>
+                        <ul>
+                            <li><strong>Wireshark:</strong> Detailed packet captures</li>
+                            <li><strong>Suricata:</strong> Security event logging</li>
+                            <li><strong>ELK:</strong> Centralized audit trails</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h4>📊 Compliance Dashboards</h4>
+                        <ul>
+                            <li>Real-time compliance status</li>
+                            <li>Automated violation detection</li>
+                            <li>Regulatory reporting automation</li>
+                            <li>Risk assessment metrics</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h4>📝 Documentation</h4>
+                        <ul>
+                            <li>Automated evidence collection</li>
+                            <li>Incident response documentation</li>
+                            <li>Change management logs</li>
+                            <li>Performance metrics tracking</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-block">
+# Sample Compliance Query (Elasticsearch)
+GET ai-security-*/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {"range": {"@timestamp": {"gte": "now-24h"}}},
+        {"match": {"event_type": "data_access"}},
+        {"match": {"classification": "sensitive"}}
+      ]
+    }
+  },
+  "aggs": {
+    "by_user": {"terms": {"field": "user_id"}},
+    "by_endpoint": {"terms": {"field": "api_endpoint"}}
+  }
+}
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-counter">15 / 15</div>
+            <h2>Future Directions and Conclusion</h2>
+            
+            <div class="two-column">
+                <div>
+                    <h3>Emerging Trends</h3>
+                    <div class="tool-card">
+                        <h4>🚀 Technology Evolution</h4>
+                        <ul>
+                            <li><strong>AI-Powered Security:</strong> ML-enhanced threat detection</li>
+                            <li><strong>Edge AI Monitoring:</strong> Distributed security architectures</li>
+                            <li><strong>Quantum-Safe Security:</strong> Post-quantum cryptography</li>
+                            <li><strong>Zero Trust AI:</strong> Never trust, always verify</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h4>📱 New Challenges</h4>
+                        <ul>
+                            <li>Federated learning security</li>
+                            <li>Multi-modal AI systems</li>
+                            <li>Real-time inference protection</li>
+                            <li>AI model versioning and rollback</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>Tool Evolution</h3>
+                    <div class="tool-card">
+                        <h4>🔮 Next-Generation Features</h4>
+                        <ul>
+                            <li><strong>Wireshark:</strong> AI traffic analysis plugins</li>
+                            <li><strong>Suricata:</strong> Advanced ML rule engines</li>
+                            <li><strong>ELK:</strong> Native AI analytics</li>
+                            <li><strong>Integration:</strong> Seamless tool coordination</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h4>🎓 Educational Opportunities</h4>
+                        <ul>
+                            <li>AI security certification programs</li>
+                            <li>Hands-on lab environments</li>
+                            <li>Industry collaboration projects</li>
+                            <li>Research publication opportunities</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-box" style="margin-top: 30px;">
+                <h3>🎯 Key Takeaways</h3>
+                <p><strong>Wireshark</strong> provides deep analysis capabilities • <strong>Suricata</strong> offers production-ready threat detection • 
+                <strong>ELK Stack</strong> enables comprehensive security analytics • <strong>Integration</strong> is key to effective AI security</p>
+            </div>
+
+            <div class="ai-ecosystem-diagram" style="margin-top: 30px;">
+                <h3>🚀 Getting Started</h3>
+                <div style="margin: 20px 0;">
+                    <div class="ecosystem-layer" style="background: linear-gradient(135deg, #4299e1, #3182ce); color: white;">
+                        <h4>1. Start Small</h4>
+                        <p>Lab Environment</p>
+                    </div>
+                    <div style="margin: 0 20px; display: inline-block;">→</div>
+                    <div class="ecosystem-layer" style="background: linear-gradient(135deg, #ed8936, #dd6b20); color: white;">
+                        <h4>2. Build Skills</h4>
+                        <p>Training & Practice</p>
+                    </div>
+                    <div style="margin: 0 20px; display: inline-block;">→</div>
+                    <div class="ecosystem-layer" style="background: linear-gradient(135deg, #38b2ac, #319795); color: white;">
+                        <h4>3. Scale Up</h4>
+                        <p>Production Deployment</p>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+
+        
+    </div>
+    
+    <div class="navigation">
+        <button id="prevBtn" class="nav-btn">Previous</button>
+        <button id="nextBtn" class="nav-btn">Next</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            let currentSlide = 0;
+
+            function showSlide(index) {
+                // Hide current slide
+                slides[currentSlide].classList.remove('active');
+                
+                // Calculate next slide index, looping around if needed
+                currentSlide = (index + slides.length) % slides.length;
+                
+                // Show the new slide
+                slides[currentSlide].classList.add('active');
+            }
+
+            prevBtn.addEventListener('click', () => {
+                showSlide(currentSlide - 1);
+            });
+
+            nextBtn.addEventListener('click', () => {
+                showSlide(currentSlide + 1);
+            });
+
+            // Add keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === ' ') { // Space bar also goes to next slide
+                    showSlide(currentSlide + 1);
+                } else if (e.key === 'ArrowLeft') {
+                    showSlide(currentSlide - 1);
+                }
+            });
+        });
+
+        // Gemini integration    
+        const modal = document.getElementById('ai-modal');
+        const modalText = document.getElementById('modal-text');
+        const modalSpinner = document.getElementById('modal-spinner');
+
+        // Function to show the loading/error modal
+        function showModal(text, isError = false) {
+            modalText.textContent = text;
+            modalSpinner.style.display = isError ? 'none' : 'block';
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        // Function to hide the modal
+        function hideModal() {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+        
+        // Generic function to call the Gemini API with exponential backoff
+        async function callGemini(prompt, maxRetries = 3) {
+            let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+            const payload = { contents: chatHistory };
+            const apiKey = "AIzaSyDUciN8HuqsTtThMKSiuneMTqeeRHDc424"; // Left empty as per instructions
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        return result.candidates[0].content.parts[0].text;
+                    } else {
+                        throw new Error("Invalid response structure from API.");
+                    }
+                } catch (error) {
+                    console.error(`Attempt ${i + 1} failed:`, error);
+                    if (i === maxRetries - 1) {
+                        throw error; // Rethrow error on last attempt
+                    }
+                    const delay = Math.pow(2, i) * 1000; // 1s, 2s, 4s
+                    await new Promise(res => setTimeout(res, delay));
+                }
+            }
+        }
+
+        // --- Feature 1: AI Rule Generator ---
+        const generateRuleBtn = document.getElementById('generate-rule-btn');
+        const ruleDescriptionInput = document.getElementById('rule-description');
+        const generatedRuleOutput = document.getElementById('generated-rule');
+
+        generateRuleBtn.addEventListener('click', async () => {
+            const description = ruleDescriptionInput.value.trim();
+            if (!description) {
+                alert("Please enter a description for the rule.");
+                return;
+            }
+
+            const prompt = `You are a cybersecurity expert specializing in Intrusion Detection Systems. Based on the following user description, generate a single, valid Snort 2.x rule. Only return the rule itself, with no explanations, introductory text, or markdown formatting. The rule must be on a single line. Description: "${description}"`;
+            
+            showModal("Generating Snort rule...");
+            generatedRuleOutput.textContent = "";
+
+            try {
+                const rule = await callGemini(prompt);
+                generatedRuleOutput.textContent = rule;
+            } catch (error) {
+                console.error("Error generating rule:", error);
+                showModal("Sorry, I couldn't generate the rule. Please try again.", true);
+                // Keep the modal open for a few seconds to show the error
+                setTimeout(hideModal, 3000);
+                return; // Prevent hiding the modal immediately
+            }
+            hideModal();
+        });
+
+        // --- Feature 2: AI Q&A Assistant ---
+        const askAiBtn = document.getElementById('ask-ai-btn');
+        const qaInput = document.getElementById('qa-input');
+        const aiResponseOutput = document.getElementById('ai-response');
+
+        askAiBtn.addEventListener('click', async () => {
+            const question = qaInput.value.trim();
+            if (!question) {
+                alert("Please enter a question.");
+                return;
+            }
+
+            const prompt = `You are a helpful cybersecurity expert and educator. Your knowledge base is focused on the topics presented: Wireshark, Snort, Suricata, and the ELK Stack. Answer the following user question clearly and concisely, as if explaining it to a beginner. Question: "${question}"`;
+
+            showModal("Thinking...");
+            aiResponseOutput.textContent = "";
+
+            try {
+                const answer = await callGemini(prompt);
+                aiResponseOutput.textContent = answer;
+            } catch (error) {
+                console.error("Error getting answer:", error);
+                 showModal("Sorry, I couldn't get an answer. Please try again.", true);
+                setTimeout(hideModal, 3000);
+                return;
+            }
+            hideModal();
+        });
+
+
+    </script>
+</body>
+</html>

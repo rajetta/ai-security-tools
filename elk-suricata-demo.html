@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Security Event Monitoring - ELK Stack & Suricata Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow: hidden;
+        }
+
+        .presentation-container {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            padding: 50px;
+            max-width: 1200px;
+            width: 90%;
+            min-height: 700px;
+            display: none;
+            animation: slideIn 0.6s ease-out;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .slide h1 {
+            font-size: 3rem;
+            color: #2d3748;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .slide h2 {
+            font-size: 2.5rem;
+            color: #2d3748;
+            margin-bottom: 25px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .slide h3 {
+            font-size: 1.8rem;
+            color: #4a5568;
+            margin: 25px 0 15px 0; 
+            font-weight: 600;
+        }
+
+        .slide h4 {
+            font-size: 1.4rem;
+            color: #2d3748;
+            margin: 20px 0 12px 0;
+            font-weight: 600;
+        }
+
+        .slide p, .slide li {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 15px;
+            xcolor: #4a5568;
+        }
+
+        .slide ul {
+            margin-left: 25px;
+            margin-bottom: 20px;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 30px 0;
+        }
+
+        .three-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .elk-component {
+            background: linear-gradient(145deg, #f7fafc, #edf2f7);
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .elk-component:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .elk-component:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 25px 0;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .highlight-box h3 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1.6rem;
+        }
+
+        .demo-section {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 25px 0;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .demo-section:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #48bb78, #38a169);
+        }
+
+        .terminal {
+            background: #2d3748;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #e2e8f0;
+            position: relative;
+        }
+
+        .terminal:before {
+            content: '● ● ●';
+            position: absolute;
+            top: 8px;
+            left: 15px;
+            color: #ff5f56;
+            font-size: 12px;
+        }
+
+        .terminal-content {
+            margin-top: 25px;
+        }
+
+        .command {
+            color: #68d391;
+            margin-bottom: 10px;
+        }
+
+        .output {
+            color: #e2e8f0;
+            margin-left: 10px;
+            margin-bottom: 8px;
+            white-space: pre-wrap;
+
+             max-height: 2.7rem; 
+            overflow: hidden; /* Hide the overflowing content */
+            transition: max-height 0.5s ease-in-out; /* Smooth transition for expansion */
+        }
+
+        /* When the user hovers over the block, expand it */
+        .output:hover {
+            max-height: 500px; /* Set a large max-height to reveal all content */
+        }
+
+        /* Add a fade-out effect to indicate more content */
+        .output::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1.5rem; /* Height of the fade */
+            background: linear-gradient(to bottom, transparent, #2d3748);
+            pointer-events: none; /* Allows clicks to pass through */
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        /* Hide the fade-out effect when expanded */
+        .output:hover::after {
+            opacity: 0;
+        }
+
+
+        .alert-box {
+            background: linear-gradient(145deg, #fed7d7, #fbb6ce);
+            border-left: 6px solid #e53e3e;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .alert-box h4 {
+            color: #c53030;
+            margin-bottom: 10px;
+        }
+
+        .workflow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 30px 0;
+            padding: 25px;
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            border-radius: 15px;
+            color: white;
+            flex-wrap: wrap;
+        }
+
+        .workflow-step {
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            flex: 1;
+            margin: 5px;
+            min-width: 120px;
+            backdrop-filter: blur(10px);
+        }
+
+        .workflow-arrow {
+            font-size: 2rem;
+            color: white;
+            margin: 0 10px;
+        }
+
+        .interactive-demo {
+            background: linear-gradient(145deg, #bee3f8, #90cdf4);
+            border: 2px solid #3182ce;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .demo-button {
+            background: linear-gradient(145deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .demo-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        .demo-output {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .kibana-dashboard {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .dashboard-widget {
+            background: white;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .alert-timeline {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: #fff5f5;
+            border-left: 4px solid #e53e3e;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .timeline-time {
+            color: #718096;
+            font-size: 0.9rem;
+            margin-right: 15px;
+            font-weight: 600;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .severity-high {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .severity-medium {
+            background: #feebc8;
+            color: #c05621;
+        }
+
+        .severity-low {
+            background: #e6fffa;
+            color: #38a169;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: linear-gradient(145deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        .slide-counter {
+            position: absolute;
+            top: 25px;
+            right: 30px;
+            background: rgba(45, 55, 72, 0.9);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            font-size: 1.4rem;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .benefit-card {
+            background: linear-gradient(145deg, #f7fafc, #edf2f7);
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px;
+                min-height: 600px;
+            }
+            
+            .slide h1 {
+                font-size: 2.2rem;
+            }
+            
+            .slide h2 {
+                font-size: 1.8rem;
+            }
+            
+            .two-column, .three-column {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .workflow-diagram {
+                flex-direction: column;
+            }
+
+            .workflow-arrow {
+                transform: rotate(90deg);
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <div class="slide-counter">1 / 11</div>
+            <h1>Real-time Security Event Monitoring</h1>
+            <div class="subtitle">ELK Stack & Suricata Integration</div>
+            
+            <div class="highlight-box" style="margin-top: 50px;">
+                <h3>Comprehensive Threat Detection & Analysis</h3>
+                <p>From Network Intrusion Detection to Advanced Security Analytics</p>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px;">
+                <div style="display: inline-block; margin: 0 20px;">
+                    <div class="icon">🛡️</div>
+                    <h4>Network Security</h4>
+                    <p>Real-time Threat Detection</p>
+                </div>
+                <div style="display: inline-block; margin: 0 20px;">
+                    <div class="icon">📊</div>
+                    <h4>Analytics Platform</h4>
+                    <p>Centralized Log Management</p>
+                </div>
+                <div style="display: inline-block; margin: 0 20px;">
+                    <div class="icon">🔍</div>
+                    <h4>Threat Hunting</h4>
+                    <p>Advanced Investigation Tools</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px; color: #718096;">
+                <strong>Interactive Demo Presentation • August 21, 2025</strong>
+            </div>
+        </div>
+
+        <!-- Slide 2: Why Security Event Monitoring Matters -->
+        <div class="slide">
+            <div class="slide-counter">2 / 11</div>
+            <h2>Why Security Event Monitoring Matters</h2>
+            
+            <div class="alert-box">
+                <h4>⚠️ The Challenge</h4>
+                <p>Cyber threats are more sophisticated and frequent than ever. A reactive security posture is no longer sufficient.</p>
+            </div>
+
+            <div class="two-column">
+                <div>
+                    <h3>Traditional Reactive Approach</h3>
+                    <div class="elk-component">
+                        <h4>❌ Problems with Reactive Security</h4>
+                        <ul>
+                            <li>Threats discovered weeks or months later</li>
+                            <li>Limited visibility into attack progression</li>
+                            <li>Damage already done before detection</li>
+                            <li>Insufficient data for forensic analysis</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>Proactive Monitoring Benefits</h3>
+                    <div class="elk-component">
+                        <h4>✅ Real-time Security Intelligence</h4>
+                        <ul>
+                            <li><strong>Instant Detection:</strong> Identify threats as they happen</li>
+                            <li><strong>Rapid Response:</strong> Minimize potential damage</li>
+                            <li><strong>Rich Context:</strong> Detailed forensic data</li>
+                            <li><strong>Compliance:</strong> Meet regulatory requirements</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="icon">🚨</div>
+                    <h4>Detect Threats Instantly</h4>
+                    <p>Identify and respond to incidents as they happen, minimizing potential damage</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="icon">🔬</div>
+                    <h4>Accelerate Investigations</h4>
+                    <p>Provide security teams with rich, contextual data for rapid forensic analysis</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="icon">📋</div>
+                    <h4>Meet Compliance</h4>
+                    <p>Fulfill regulatory requirements (PCI DSS, HIPAA) that mandate log collection</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: The ELK Stack Components -->
+        <div class="slide">
+            <div class="slide-counter">3 / 11</div>
+            <h2>The ELK Stack: Components & Workflow</h2>
+            
+            <div class="highlight-box">
+                <h3>Powerful Open-Source Security Analytics Platform</h3>
+                <p>Centralized logging, real-time search, and advanced visualization</p>
+            </div>
+
+            <div class="three-column">
+                <div class="elk-component">
+                    <h4>🔍 Elasticsearch</h4>
+                    <p><strong>Search & Analytics Engine</strong></p>
+                    <ul>
+                        <li>Highly scalable data storage</li>
+                        <li>Real-time indexing</li>
+                        <li>Complex query capabilities</li>
+                        <li>Horizontal scaling</li>
+                    </ul>
+                </div>
+                
+                <div class="elk-component">
+                    <h4>🔄 Logstash</h4>
+                    <p><strong>Data Processing Pipeline</strong></p>
+                    <ul>
+                        <li>Log ingestion & parsing</li>
+                        <li>Data transformation</li>
+                        <li>GeoIP enrichment</li>
+                        <li>Real-time processing</li>
+                    </ul>
+                </div>
+                
+                <div class="elk-component">
+                    <h4>📊 Kibana</h4>
+                    <p><strong>Visualization Platform</strong></p>
+                    <ul>
+                        <li>Interactive dashboards</li>
+                        <li>Real-time monitoring</li>
+                        <li>Custom visualizations</li>
+                        <li>Advanced analytics</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="elk-component">
+                <h4>📤 Beats (Filebeat)</h4>
+                <p><strong>Lightweight Data Shipper</strong></p>
+                <ul>
+                    <li>Efficiently forwards log files (eve.json) from Suricata</li>
+                    <li>Reliable data delivery with backpressure handling</li>
+                    <li>Minimal resource footprint</li>
+                </ul>
+            </div>
+
+            <div class="workflow-diagram">
+                <div class="workflow-step">
+                    <h4>📡 Data Collection</h4>
+                    <p>Suricata generates security events</p>
+                </div>
+                <div class="workflow-arrow">→</div>
+                <div class="workflow-step">
+                    <h4>📤 Data Shipping</h4>
+                    <p>Filebeat forwards logs</p>
+                </div>
+                <div class="workflow-arrow">→</div>
+                <div class="workflow-step">
+                    <h4>🔄 Processing</h4>
+                    <p>Logstash enriches data</p>
+                </div>
+                <div class="workflow-arrow">→</div>
+                <div class="workflow-step">
+                    <h4>💾 Storage</h4>
+                    <p>Elasticsearch indexes</p>
+                </div>
+                <div class="workflow-arrow">→</div>
+                <div class="workflow-step">
+                    <h4>📊 Visualization</h4>
+                    <p>Kibana displays</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Suricata Deep Packet Inspection -->
+        <div class="slide">
+            <div class="slide-counter">4 / 11</div>
+            <h2>Suricata: Deep Packet Inspection</h2>
+            
+            <div class="highlight-box">
+                <h3>High-Performance Network Intrusion Detection System</h3>
+                <p>Multi-threaded security engine with advanced threat detection capabilities</p>
+            </div>
+
+            <div class="two-column">
+                <div>
+                    <h3>Core Capabilities</h3>
+                    <div class="elk-component">
+                        <h4>🔍 Detection Methods</h4>
+                        <ul>
+                            <li><strong>Signature-based:</strong> Known threat patterns</li>
+                            <li><strong>Anomaly detection:</strong> Unusual protocol usage</li>
+                            <li><strong>Protocol analysis:</strong> Deep packet inspection</li>
+                            <li><strong>Flow monitoring:</strong> Connection tracking</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="elk-component">
+                        <h4>📊 Logging Features</h4>
+                        <ul>
+                            <li>Structured JSON output (eve.json)</li>
+                            <li>Detailed alert information</li>
+                            <li>Network flow metadata</li>
+                            <li>File extraction capabilities</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>Network Security Functions</h3>
+                    <div class="elk-component">
+                        <h4>🛡️ Acts Like a Security Camera</h4>
+                        <p>Continuously monitors network traffic performing:</p>
+                        <ul>
+                            <li><strong>Threat Identification:</strong> Extensive ruleset for malware, C&C activity, exploits</li>
+                            <li><strong>Anomaly Detection:</strong> Identifies unusual patterns indicating novel threats</li>
+                            <li><strong>Complete Logging:</strong> Detailed events for every alert and flow</li>
+                        </ul>
+                    </div>
+
+                    <div class="demo-section">
+                        <h4>📋 Sample Suricata Rule</h4>
+                        <div class="terminal">
+                            <div class="terminal-content">
+                                <div class="command"># SQL Injection Detection Rule</div>
+                                <div class="output">alert http any any -> any any (
+  msg:"SQL Injection Attempt";
+  content:"union select";
+  nocase;
+  http_uri;
+  classtype:web-application-attack;
+  sid:1001;
+  rev:1;
+)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Integration Workflow -->
+        <div class="slide">
+            <div class="slide-counter">5 / 11</div>
+            <h2>Integrating Suricata with ELK Stack</h2>
+            
+            <div class="highlight-box">
+                <h3>Creating a Robust SIEM Solution</h3>
+                <p>Seamless integration for comprehensive security monitoring</p>
+            </div>
+
+            <div class="workflow-diagram" style="flex-direction: column; align-items: stretch;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0;">
+                    <div class="workflow-step">
+                        <h4>1. Detection</h4>
+                        <p>Suricata inspects traffic and writes alerts to eve.json</p>
+                    </div>
+                    <div class="workflow-arrow">↓</div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0;">
+                    <div class="workflow-step">
+                        <h4>2. Shipping</h4>
+                        <p>Filebeat tails log file and forwards events to Logstash</p>
+                    </div>
+                    <div class="workflow-arrow">↓</div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0;">
+                    <div class="workflow-step">
+                        <h4>3. Processing</h4>
+                        <p>Logstash parses, enriches (GeoIP), and structures data</p>
+                    </div>
+                    <div class="workflow-arrow">↓</div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0;">
+                    <div class="workflow-step">
+                        <h4>4. Storage & Indexing</h4>
+                        <p>Elasticsearch stores and indexes for instant search</p>
+                    </div>
+                    <div class="workflow-arrow">↓</div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0;">
+                    <div class="workflow-step">
+                        <h4>5. Visualization & Analysis</h4>
+                        <p>Kibana queries and displays real-time dashboards</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-section">
+                <h4>🔧 Sample Logstash Configuration</h4>
+                <div class="terminal">
+                    <div class="terminal-content">
+                        <div class="command"># /etc/logstash/conf.d/suricata.conf</div>
+                        <div class="output">input {
+  beats {
+    port => 5044
+  }
+}
+
+filter {
+  if [fields][source] == "suricata" {
+    json {
+      source => "message"
+    }
+    
+    if [event_type] == "alert" {
+      mutate {
+        add_tag => ["suricata_alert"]
+      }
+      
+      geoip {
+        source => "src_ip"
+        target => "src_geo"
+      }
+    }
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["localhost:9200"]
+    index => "suricata-%{+YYYY.MM.dd}"
+  }
+}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Live Demo Step 1 -->
+        <div class="slide">
+            <div class="slide-counter">6 / 11</div>
+            <h2>Live Demo - Step 1: Simulating the Attack</h2>
+            
+            <div class="interactive-demo">
+                <h3>🎯 SQL Injection Attack Simulation</h3>
+                <p>We'll simulate a common SQL Injection attack using curl to send malicious requests</p>
+                <button class="demo-button" onclick="simulateAttack()">🚀 Launch SQL Injection Attack</button>
+            </div>
+
+            <div class="demo-section">
+                <h4>💻 Attack Command</h4>
+                <div class="terminal">
+                    <div class="terminal-content">
+                        <div class="command">$ curl -X GET "http://vulnerable-app.local/search?q=test' UNION SELECT username,password FROM users--"</div>
+                        <div class="output" id="attack-output" style="display: none;">
+GET /search?q=test' UNION SELECT username,password FROM users-- HTTP/1.1
+Host: vulnerable-app.local
+User-Agent: curl/7.68.0
+Accept: */*
+
+Response: 200 OK
+Content-Type: text/html
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="elk-component">
+                <h4>🔍 What's Happening</h4>
+                <ul>
+                    <li><strong>Attack Vector:</strong> SQL Injection via URL parameter</li>
+                    <li><strong>Payload:</strong> UNION SELECT to extract user credentials</li>
+                    <li><strong>Target:</strong> Web application database</li>
+                    <li><strong>Detection:</strong> Suricata monitors HTTP traffic for malicious patterns</li>
+                </ul>
+            </div>
+
+            <div class="alert-box">
+                <h4>⚠️ Security Note</h4>
+                <p>This demonstration uses a controlled environment. Never attempt these attacks on systems you don't own or without explicit permission.</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Live Demo Step 2 -->
+        <div class="slide">
+            <div class="slide-counter">7 / 11</div>
+            <h2>Live Demo - Step 2: Suricata Alert</h2>
+            
+            <div class="interactive-demo">
+                <h3>🚨 Real-time Threat Detection</h3>
+                <p>Suricata instantly detects the malicious pattern and generates an alert</p>
+                <button class="demo-button" onclick="showSuricataAlert()">📋 View Suricata Alert Log</button>
+            </div>
+
+            <div class="demo-section">
+                <h4>📊 Raw Suricata Alert (eve.json)</h4>
+                <div class="terminal">
+                    <div class="terminal-content">
+                        <div class="output" id="suricata-alert" style="display: none;">
+{
+  "timestamp": "2025-08-21T14:32:15.123456+0000",
+  "flow_id": 987654321,
+  "event_type": "alert",
+  "src_ip": "192.168.1.100",
+  "src_port": 54321,
+  "dest_ip": "10.0.1.50",
+  "dest_port": 80,
+  "proto": "TCP",
+  "alert": {
+    "action": "allowed",
+    "gid": 1,
+    "signature_id": 2100498,
+    "rev": 7,
+    "signature": "GPL POLICY SQL injection attempt",
+    "category": "policy-violation",
+    "severity": 1
+  },
+  "http": {
+    "hostname": "vulnerable-app.local",
+    "url": "/search?q=test' UNION SELECT username,password FROM users--",
+    "http_user_agent": "curl/7.68.0",
+    "http_method": "GET",
+    "protocol": "HTTP/1.1",
+    "status": 200,
+    "length": 1247
+  },
+  "app_proto": "http",
+  "flow": {
+    "pkts_toserver": 1,
+    "pkts_toclient": 1,
+    "bytes_toserver": 187,
+    "bytes_toclient": 1247
+  }
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="two-column">
+                <div>
+                    <h3>🔍 Alert Analysis</h3>
+                    <div class="elk-component">
+                        <h4>Key Information Captured</h4>
+                        <ul>
+                            <li><strong>Attack Type:</strong> SQL Injection</li>
+                            <li><strong>Severity:</strong> High (Level 1)</li>
+                            <li><strong>Source IP:</strong> 192.168.1.100</li>
+                            <li><strong>Target:</strong> vulnerable-app.local</li>
+                            <li><strong>Payload:</strong> UNION SELECT attack</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>📈 Detection Context</h3>
+                    <div class="elk-component">
+                        <h4>Rich Metadata</h4>
+                        <ul>
+                            <li><strong>Flow ID:</strong> Connection tracking</li>
+                            <li><strong>Protocol Details:</strong> HTTP method, status</li>
+                            <li><strong>Traffic Volume:</strong> Bytes in/out</li>
+                            <li><strong>Timestamp:</strong> Precise timing</li>
+                            <li><strong>User Agent:</strong> Tool identification</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>🎯 Detection Success</h3>
+                <p>Suricata's rule engine successfully identified the SQL injection attempt in real-time. The structured JSON format provides rich context for analysis.</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: Live Demo Step 3 -->
+        <div class="slide">
+            <div class="slide-counter">8 / 11</div>
+            <h2>Live Demo - Step 3: Kibana Dashboard</h2>
+            
+            <div class="interactive-demo">
+                <h3>📊 Real-time Security Dashboard</h3>
+                <p>The alert appears instantly in our Kibana security dashboard</p>
+                <button class="demo-button" onclick="showKibanaDashboard()">🖥️ Open Security Dashboard</button>
+            </div>
+
+            <div class="kibana-dashboard" id="kibana-dashboard" style="display: none;">
+                <h4>🛡️ Security Operations Center Dashboard</h4>
+                
+                <div class="dashboard-widget">
+                    <h4>🚨 Live Alert Stream</h4>
+                    <div class="alert-timeline severity-high">
+                        <div class="timeline-time">14:32:15</div>
+                        <div class="timeline-content">
+                            <strong>SQL Injection Attempt</strong> from 192.168.1.100 → vulnerable-app.local
+                        </div>
+                    </div>
+                    <div class="alert-timeline severity-medium">
+                        <div class="timeline-time">14:30:42</div>
+                        <div class="timeline-content">
+                            <strong>Port Scan Detected</strong> from 192.168.1.50 → 10.0.1.0/24
+                        </div>
+                    </div>
+                    <div class="alert-timeline severity-low">
+                        <div class="timeline-time">14:28:33</div>
+                        <div class="timeline-content">
+                            <strong>DNS Query</strong> suspicious domain: malware-c2.evil.com
+                        </div>
+                    </div>
+                </div>
+
+                <div class="two-column">
+                    <div class="dashboard-widget">
+                        <h4>🌍 Geographic Threat Map</h4>
+                        <div style="background: #2d3748; color: #e2e8f0; padding: 15px; border-radius: 8px; text-align: center; font-family: monospace;">
+                            <div>🗺️ World Map Visualization</div>
+                            <div style="margin: 10px 0;">📍 Attack Sources:</div>
+                            <div>🔴 192.168.1.100 (Internal Network)</div>
+                            <div>🔴 203.0.113.45 (Beijing, China)</div>
+                            <div>🔴 198.51.100.23 (Moscow, Russia)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-widget">
+                        <h4>📈 Top Alert Signatures</h4>
+                        <div style="padding: 10px;">
+                            <div style="display: flex; justify-content: space-between; margin: 5px 0; padding: 5px; background: #fed7d7; border-radius: 4px;">
+                                <span>SQL Injection Attempt</span>
+                                <span><strong>23</strong></span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin: 5px 0; padding: 5px; background: #feebc8; border-radius: 4px;">
+                                <span>Port Scan Detected</span>
+                                <span><strong>15</strong></span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin: 5px 0; padding: 5px; background: #e6fffa; border-radius: 4px;">
+                                <span>DNS Anomaly</span>
+                                <span><strong>8</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-widget">
+                    <h4>🔍 Detailed Event Information</h4>
+                    <div style="background: #f7fafc; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 0.9rem;">
+                        <div><strong>Alert ID:</strong> 2100498</div>
+                        <div><strong>Signature:</strong> GPL POLICY SQL injection attempt</div>
+                        <div><strong>Source:</strong> 192.168.1.100:54321</div>
+                        <div><strong>Destination:</strong> 10.0.1.50:80 (vulnerable-app.local)</div>
+                        <div><strong>Payload:</strong> test' UNION SELECT username,password FROM users--</div>
+                        <div><strong>Classification:</strong> Web Application Attack</div>
+                        <div><strong>Risk Score:</strong> 85/100 (High)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>🎯 Dashboard Features</h3>
+                <p>Real-time visualization • Geographic threat mapping • Alert prioritization • One-click investigation</p>
+            </div>
+        </div>
+
+        <!-- Slide 9: Advanced Analysis & Threat Hunting -->
+        <div class="slide">
+            <div class="slide-counter">9 / 11</div>
+            <h2>Advanced Analysis & Threat Hunting</h2>
+            
+            <div class="highlight-box">
+                <h3>Beyond Basic Dashboards: Deep Investigation Capabilities</h3>
+                <p>Kibana's Discover interface enables sophisticated threat hunting and forensic analysis</p>
+            </div>
+
+            <div class="interactive-demo">
+                <h3>🔍 Interactive Threat Hunting</h3>
+                <p>Explore advanced search and investigation capabilities</p>
+                <button class="demo-button" onclick="showThreatHunting()">🕵️ Start Threat Hunting Session</button>
+            </div>
+
+            <div class="demo-section" id="threat-hunting" style="display: none;">
+                <h4>🔍 Kibana Query Language (KQL) Examples</h4>
+                <div class="terminal">
+                    <div class="terminal-content">
+                        <div class="command"># Find all SQL injection attempts in last 24 hours</div>
+                        <div class="output">alert.signature: "*SQL injection*" AND @timestamp: [now-24h TO now]</div>
+                        
+                        <div class="command"># Investigate specific attacker IP</div>
+                        <div class="output">src_ip: "192.168.1.100" AND event_type: "alert"</div>
+                        
+                        <div class="command"># Find high severity alerts</div>
+                        <div class="output">alert.severity: [1 TO 3] AND alert.category: "*attack*"</div>
+                        
+                        <div class="command"># Detect potential lateral movement</div>
+                        <div class="output">src_ip: "192.168.1.*" AND dest_ip: "10.0.1.*" AND proto: "TCP"</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="three-column">
+                <div class="elk-component">
+                    <h4>🔎 Searching & Filtering</h4>
+                    <ul>
+                        <li>Query terabytes of data in seconds</li>
+                        <li>Simple KQL syntax</li>
+                        <li>Time-based filtering</li>
+                        <li>Complex boolean queries</li>
+                    </ul>
+                </div>
+                
+                <div class="elk-component">
+                    <h4>🎯 Pivoting Analysis</h4>
+                    <ul>
+                        <li>Investigate suspicious IPs</li>
+                        <li>Track attack progression</li>
+                        <li>Correlate multiple events</li>
+                        <li>Timeline reconstruction</li>
+                    </ul>
+                </div>
+                
+                <div class="elk-component">
+                    <h4>📊 Pattern Discovery</h4>
+                    <ul>
+                        <li>Visualize trends over time</li>
+                        <li>Identify unusual spikes</li>
+                        <li>Detect campaign patterns</li>
+                        <li>Behavioral analysis</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="demo-section">
+                <h4>📈 Advanced Visualization Examples</h4>
+                <div class="two-column">
+                    <div class="dashboard-widget">
+                        <h4>🕐 Attack Timeline</h4>
+                        <div style="background: #2d3748; color: #e2e8f0; padding: 15px; border-radius: 8px; text-align: center;">
+                            <div>📊 Time Series Graph</div>
+                            <div style="margin: 10px 0;">Attack frequency over 24h period</div>
+                            <div>Peak: 2:30 AM (45 events)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-widget">
+                        <h4>🌐 Network Flow Analysis</h4>
+                        <div style="background: #2d3748; color: #e2e8f0; padding: 15px; border-radius: 8px; text-align: center;">
+                            <div>🕸️ Connection Graph</div>
+                            <div style="margin: 10px 0;">Source → Target relationships</div>
+                            <div>192.168.1.100 → 15 targets</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Key Benefits & Implementation -->
+        <div class="slide">
+            <div class="slide-counter">10 / 11</div>
+            <h2>Key Benefits & Implementation Strategy</h2>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="icon">👁️</div>
+                    <h4>Centralized Visibility</h4>
+                    <p>Single pane of glass for all network security events across your infrastructure</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="icon">⚡</div>
+                    <h4>Real-time Detection</h4>
+                    <p>Instantly identify and react to threats with sub-second alerting capabilities</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="icon">🔬</div>
+                    <h4>Powerful Analytics</h4>
+                    <p>Move beyond simple alerts to sophisticated threat hunting and investigation</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="icon">📈</div>
+                    <h4>Scalable & Cost-Effective</h4>
+                    <p>Open-source solution that grows with your organization's security needs</p>
+                </div>
+            </div>
+
+            <div class="two-column">
+                <div>
+                    <h3>🚀 Implementation Roadmap</h3>
+                    <div class="elk-component">
+                        <h4>Phase 1: Foundation</h4>
+                        <ul>
+                            <li>Deploy ELK Stack infrastructure</li>
+                            <li>Install and configure Suricata</li>
+                            <li>Set up basic log forwarding</li>
+                            <li>Create initial dashboards</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="elk-component">
+                        <h4>Phase 2: Enhancement</h4>
+                        <ul>
+                            <li>Expand data sources (firewalls, apps)</li>
+                            <li>Configure automated alerting</li>
+                            <li>Develop custom visualizations</li>
+                            <li>Implement threat intelligence feeds</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>💡 Next Steps</h3>
+                    <div class="elk-component">
+                        <h4>🔧 Technical Actions</h4>
+                        <ul>
+                            <li><strong>Data Sources:</strong> Integrate additional security tools</li>
+                            <li><strong>Automation:</strong> Email/Slack notifications for critical events</li>
+                            <li><strong>Customization:</strong> Build organization-specific dashboards</li>
+                            <li><strong>Integration:</strong> Connect with SOAR platforms</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="elk-component">
+                        <h4>📊 Success Metrics</h4>
+                        <ul>
+                            <li><strong>MTTD:</strong> Mean Time to Detection &lt; 5 minutes</li>
+                            <li><strong>MTTR:</strong> Mean Time to Response &lt; 30 minutes</li>
+                            <li><strong>Coverage:</strong> 100% network visibility</li>
+                            <li><strong>Accuracy:</strong> &lt;5% false positive rate</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>🎯 Business Impact</h3>
+                <p>Reduced security incidents • Faster threat response • Improved compliance posture • Enhanced security team productivity</p>
+            </div>
+        </div>
+
+        <!-- Slide 11: Q&A -->
+        <div class="slide">
+            <div class="slide-counter">11 / 11</div>
+            <div class="highlight-box" style="text-align: center; padding: 80px;">
+                <h1 style="font-size: 3.5rem; margin-bottom: 30px;">❓ Q&A Session</h1>
+                <h2>Questions & Discussion</h2>
+                
+                <div style="margin: 50px 0;">
+                    <div class="two-column">
+                        <div class="elk-component">
+                            <h4>🛠️ Implementation</h4>
+                            <ul>
+                                <li>Architecture considerations</li>
+                                <li>Sizing and capacity planning</li>
+                                <li>Integration challenges</li>
+                                <li>Performance optimization</li>
+                            </ul>
+                        </div>
+                        <div class="elk-component">
+                            <h4>🔐 Security & Operations</h4>
+                            <ul>
+                                <li>Rule tuning strategies</li>
+                                <li>False positive management</li>
+                                <li>Incident response workflows</li>
+                                <li>Compliance requirements</li>
+                            </ul>
+                        </div>
+                        <div class="elk-component">
+                            <h4>📈 Advanced Features</h4>
+                            <ul>
+                                <li>Machine learning integration</li>
+                                <li>Custom rule development</li>
+                                <li>Multi-tenant deployments</li>
+                                <li>Cloud-native considerations</li>
+                            </ul>
+                        </div>
+                        <div class="elk-component">
+                            <h4>🎯 Use Cases</h4>
+                            <ul>
+                                <li>Industry-specific requirements</li>
+                                <li>Hybrid cloud monitoring</li>
+                                <li>IoT security monitoring</li>
+                                <li>DevSecOps integration</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 50px;">
+                    <h3 style="color: white;">Thank you for your attention!</h3>
+                    <p style="font-size: 1.2rem; color: rgba(255,255,255,0.8);">Ready to implement real-time security monitoring?</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation">
+        <button class="nav-btn" onclick="previousSlide()">← Previous</button>
+        <button class="nav-btn" onclick="nextSlide()">Next →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function previousSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        // Interactive Demo Functions
+        function simulateAttack() {
+            const output = document.getElementById('attack-output');
+            output.style.display = 'block';
+            output.style.animation = 'fadeIn 0.5s ease-out';
+            
+            // Simulate typing effect
+            const content = output.innerHTML;
+            output.innerHTML = '';
+            let i = 0;
+            const typeEffect = setInterval(() => {
+                output.innerHTML = content.substring(0, i);
+                i++;
+                if (i > content.length) {
+                    clearInterval(typeEffect);
+                }
+            }, 20);
+        }
+
+        function showSuricataAlert() {
+            const alert = document.getElementById('suricata-alert');
+            alert.style.display = 'block';
+            alert.style.animation = 'fadeIn 0.5s ease-out';
+            
+            // Highlight critical fields
+            setTimeout(() => {
+                alert.innerHTML = alert.innerHTML
+                    .replace(/"signature": "GPL POLICY SQL injection attempt"/, '"signature": "<span style="color: #ff6b6b; font-weight: bold;">"GPL POLICY SQL injection attempt"</span>')
+                    .replace(/"severity": 1/, '"severity": <span style="color: #ff6b6b; font-weight: bold;">1</span>')
+                    .replace(/"src_ip": "192.168.1.100"/, '"src_ip": "<span style="color: #ffa726; font-weight: bold;">"192.168.1.100"</span>');
+            }, 1000);
+        }
+
+        function showKibanaDashboard() {
+            const dashboard = document.getElementById('kibana-dashboard');
+            dashboard.style.display = 'block';
+            dashboard.style.animation = 'fadeIn 0.8s ease-out';
+            
+            // Animate alert timeline
+            const alerts = dashboard.querySelectorAll('.alert-timeline');
+            alerts.forEach((alert, index) => {
+                setTimeout(() => {
+                    alert.style.animation = 'fadeIn 0.6s ease-out';
+                    alert.style.transform = 'translateX(0)';
+                }, index * 300);
+            });
+        }
+
+        function showThreatHunting() {
+            const hunting = document.getElementById('threat-hunting');
+            hunting.style.display = 'block';
+            hunting.style.animation = 'fadeIn 0.6s ease-out';
+            
+            // Simulate interactive query execution
+            const commands = hunting.querySelectorAll('.command');
+            const outputs = hunting.querySelectorAll('.output');
+            
+            commands.forEach((cmd, index) => {
+                setTimeout(() => {
+                    cmd.style.color = '#68d391';
+                    cmd.style.fontWeight = 'bold';
+                    if (outputs[index]) {
+                        outputs[index].style.color = '#90cdf4';
+                    }
+                }, index * 800);
+            });
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                previousSlide();
+            }
+        });
+
+        // Auto-demo mode (optional)
+        let autoDemoMode = false;
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'd' || e.key === 'D') {
+                autoDemoMode = !autoDemoMode;
+                if (autoDemoMode) {
+                    // Auto-trigger demos when reaching demo slides
+                    if (currentSlide === 5) simulateAttack();
+                    if (currentSlide === 6) showSuricataAlert();
+                    if (currentSlide === 7) showKibanaDashboard();
+                    if (currentSlide === 8) showThreatHunting();
+                }
+            }
+        });
+
+        // Initialize
+        console.log('ELK Stack & Suricata Security Demo Ready!');
+        console.log('Use arrow keys or click buttons to navigate');
+        console.log('Press "D" to toggle auto-demo mode');
+    </script>
+</body>
+</html>
