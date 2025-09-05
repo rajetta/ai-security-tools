@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Monitoring Tools for AI Ecosystem - Presentations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            font-style: italic;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .intro {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #555;
+        }
+
+        .intro h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 400;
+        }
+
+        .presentations {
+            display: grid;
+            gap: 20px;
+        }
+
+        .presentation-card {
+            background: white;
+            border: 1px solid #e1e8ed;
+            border-radius: 10px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .presentation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+        }
+
+        .presentation-card h3 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+
+        .presentation-card p {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .presentation-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .presentation-link:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .presentation-link::before {
+            content: "🔗";
+            font-size: 1.1rem;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 25px 30px;
+            text-align: center;
+            border-top: 1px solid #e1e8ed;
+            color: #666;
+        }
+
+        .footer p {
+            margin-bottom: 10px;
+        }
+
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .tech-badge {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .tech-stack {
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Network Monitoring Tools for AI Ecosystem</h1>
+            <p>AICTE ATAL Faculty Development Program</p>
+            <p class="subtitle">AI-Driven Cybersecurity: Defense Strategies for the Digital Era</p>
+        </div>
+
+        <div class="content">
+            <div class="intro">
+                <h2>Presentation Materials</h2>
+                <p>Interactive demonstrations of network monitoring and security tools for AI infrastructure analysis.</p>
+            </div>
+
+            <div class="presentations">
+                <div class="presentation-card">
+                    <h3>AI Security Tools Overview</h3>
+                    <p>Comprehensive presentation covering network monitoring tools specifically designed for AI ecosystem security. Includes threat detection strategies and implementation approaches.</p>
+                    <a href="ai_security_tools_presentation-v2.html" class="presentation-link">
+                        View Presentation
+                    </a>
+                </div>
+
+                <div class="presentation-card">
+                    <h3>Wireshark for AI Traffic Analysis</h3>
+                    <p>Deep dive into using Wireshark for analyzing AI-related network traffic. Demonstrates packet inspection techniques for AI model inference and training communications.</p>
+                    <a href="ai_wireshark_presentation.html" class="presentation-link">
+                        View Presentation
+                    </a>
+                </div>
+
+                <div class="presentation-card">
+                    <h3>ELK Stack & Suricata Integration Demo</h3>
+                    <p>Hands-on demonstration of integrating Suricata IDS with ELK stack for real-time monitoring and visualization of AI infrastructure security events.</p>
+                    <a href="elk-suricata-demo.html" class="presentation-link">
+                        View Presentation
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Technologies Covered:</strong></p>
+            <div class="tech-stack">
+                <span class="tech-badge">Wireshark</span>
+                <span class="tech-badge">Suricata</span>
+                <span class="tech-badge">ELK Stack</span>
+                <span class="tech-badge">AI Security</span>
+                <span class="tech-badge">Network Monitoring</span>
+            </div>
+            <p style="margin-top: 20px; font-size: 0.9rem;">
+                Presented at KITS Warangal | AICTE ATAL FDP Program
+            </p>
+        </div>
+    </div>
+</body>
+</html>
