@@ -1494,7 +1494,7 @@ GET ai-security-*/_search
         async function callGemini(prompt, maxRetries = 3) {
             let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
             const payload = { contents: chatHistory };
-            const apiKey = "AIzaSyDUciN8HuqsTtThMKSiuneMTqeeRHDc424"; // Left empty as per instructions
+            const apiKey = "GEMINI_KEY_HERE"; // Left empty as per instructions
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
             
             for (let i = 0; i < maxRetries; i++) {
